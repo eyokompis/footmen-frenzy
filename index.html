@@ -33,13 +33,13 @@ button{font:inherit;font-weight:800;color:#f7f4e9;background:linear-gradient(#3a
 (()=>{
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
 const $=id=>document.getElementById(id);
-let W=0,H=0,dpr=1,last=0,elapsed=0,playerLane=1,playerTowers=[40,40,40],enemyTowers=[40,40,40],gold=150,enemyGold=150,upgradeLevel=1,enemyUpgradeLevel=1,playerBase=100,enemyBase=100,units=[],particles=[],spawnClock=0,enemyClock=0,incomeClock=0,hero={level:1,xp:0,need:5},abilityCooldown=0,rallyCooldown=0,healCooldown=0,rallyTime=0,heroRespawn=0,ended=false,toastClock=0;
+let W=0,H=0,dpr=1,last=0,elapsed=0,playerLane=1,playerTowers=[40,40,40],enemyTowers=[40,40,40],playerTowerClock=[0,0,0],enemyTowerClock=[0,0,0],gold=150,enemyGold=150,upgradeLevel=1,enemyUpgradeLevel=1,playerBase=100,enemyBase=100,units=[],particles=[],spawnClock=0,enemyClock=0,incomeClock=0,hero={level:1,xp:0,need:5},abilityCooldown=0,rallyCooldown=0,healCooldown=0,rallyTime=0,heroRespawn=0,ended=false,toastClock=0;
 const rand=(a,b)=>a+Math.random()*(b-a);
 function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
 new ResizeObserver(resize).observe(canvas);resize();
 function say(s){$('toast').textContent=s;$('toast').classList.add('show');toastClock=2.4}
 function spawn(team,heroUnit=false,ranger=false,kind='footman',forcedLane=null){const lane=forcedLane===null?(team==='blue'?playerLane:Math.floor(Math.random()*3)):forcedLane;const laneY=[.24,.5,.76][lane];const x=team==='blue'?W*.14:W*.86;const up=team==='blue'?upgradeLevel:enemyUpgradeLevel;let hp=heroUnit?100+(hero.level-1)*20:ranger?27+up*3:kind==='knight'?70+up*8:kind==='mage'?25+up*3:kind==='siege'?68+up*8:34+up*7;let damage=heroUnit?14+(hero.level-1)*4:ranger?6+up:kind==='knight'?12+up*2:kind==='mage'?15+up*2:kind==='siege'?7+up:7+up*2;let speed=heroUnit?21:ranger?18:kind==='knight'?12:kind==='mage'?14:kind==='siege'?8:rand(15,23);let range=heroUnit?30:ranger?82:kind==='mage'?105:kind==='siege'?125:kind==='knight'?25:22;units.push({team,x:x+rand(-8,8),y:H*laneY+rand(-10,10),lane,hp,max:hp,damage,speed,range,attack:0,hero:heroUnit,ranger:ranger||kind==='mage',kind, siege:kind==='siege',alive:true})}
-function init(){playerLane=1;playerTowers=[40,40,40];enemyTowers=[40,40,40];document.querySelectorAll('[data-lane]').forEach(b=>b.classList.toggle('active',Number(b.dataset.lane)===playerLane));elapsed=0;gold=150;enemyGold=150;upgradeLevel=1;enemyUpgradeLevel=1;playerBase=100;enemyBase=100;units=[];particles=[];spawnClock=0;enemyClock=0;incomeClock=0;hero={level:1,xp:0,need:5};abilityCooldown=0;rallyCooldown=0;healCooldown=0;rallyTime=0;heroRespawn=0;ended=false;spawn('blue',true);for(let i=0;i<3;i++)spawn('blue');for(let i=0;i<3;i++)spawn('red');sync();say('Battle begins! Train your first footman.')}
+function init(){playerLane=1;playerTowers=[40,40,40];enemyTowers=[40,40,40];playerTowerClock=[0,0,0];enemyTowerClock=[0,0,0];document.querySelectorAll('[data-lane]').forEach(b=>b.classList.toggle('active',Number(b.dataset.lane)===playerLane));elapsed=0;gold=150;enemyGold=150;upgradeLevel=1;enemyUpgradeLevel=1;playerBase=100;enemyBase=100;units=[];particles=[];spawnClock=0;enemyClock=0;incomeClock=0;hero={level:1,xp:0,need:5};abilityCooldown=0;rallyCooldown=0;healCooldown=0;rallyTime=0;heroRespawn=0;ended=false;spawn('blue',true);for(let i=0;i<3;i++)spawn('blue');for(let i=0;i<3;i++)spawn('red');sync();say('Battle begins! Train your first footman.')}
 function train(){if(ended)return;if(gold<50){say('Not enough gold!');return}gold-=50;spawn('blue');sync();$('status').textContent='A fresh footman joins the march.'}
 function trainRanger(){if(ended)return;if(gold<80){say('Not enough gold!');return}gold-=80;spawn('blue',false,true);sync();$('status').textContent='A ranger joins the army and attacks from range.'}
 function trainKind(kind,cost){if(ended)return;if(gold<cost){say('Not enough gold!');return}gold-=cost;spawn('blue',false,false,kind);sync();const labels={knight:'A tough knight joins the front line.',mage:'A mage joins the army with long-range magic.',siege:'A siege engine is ready to smash the enemy keep.'};$('status').textContent=labels[kind]}
@@ -58,6 +58,25 @@ function update(dt){if(ended)return;elapsed+=dt;abilityCooldown=Math.max(0,abili
 if(spawnClock>5.8){spawnClock=0;if(units.filter(u=>u.team==='blue'&&!u.hero).length<15)spawn('blue')}
 if(enemyClock>4.4){enemyClock=0;if(units.filter(u=>u.team==='red').length<18){const blue=units.filter(u=>u.team==='blue'&&!u.hero);const ranged=blue.filter(u=>u.ranger||u.kind==='mage').length;const siege=blue.filter(u=>u.siege).length;const knights=blue.filter(u=>u.kind==='knight').length;let choice='footman';if(ranged>=3&&enemyGold>=110)choice='knight';else if(knights>=3&&enemyGold>=125&&elapsed>18)choice='mage';else if(siege>=2&&enemyGold>=125&&elapsed>20)choice='mage';else if(enemyGold>=160&&elapsed>35&&Math.random()<.2)choice='siege';else if(enemyGold>=125&&elapsed>20&&Math.random()<.28)choice='mage';else if(enemyGold>=110&&Math.random()<.3)choice='knight';else if(enemyGold>=80&&Math.random()<.3)choice='ranger';const cost={footman:0,knight:110,mage:125,siege:160,ranger:80}[choice];if(choice==='ranger')spawn('red',false,true);else spawn('red',false,false,choice);enemyGold-=cost}}
 if(incomeClock>2){incomeClock=0;gold+=12;enemyGold+=10;if(elapsed>45&&enemyUpgradeLevel<3&&enemyGold>=150*enemyUpgradeLevel){enemyGold-=150*enemyUpgradeLevel;enemyUpgradeLevel++;units.filter(u=>u.team==='red').forEach(u=>{u.max+=6;u.hp=Math.min(u.max,u.hp+6);u.damage+=2});say('Enemy army upgraded!')}}
+// Living towers fire at nearby enemies in their own lane.
+for(let lane=0;lane<3;lane++){
+  for(const side of ['blue','red']){
+    const towers=side==='blue'?playerTowers:enemyTowers;
+    const clocks=side==='blue'?playerTowerClock:enemyTowerClock;
+    if(towers[lane]<=0)continue;
+    clocks[lane]-=dt;
+    if(clocks[lane]>0)continue;
+    const towerX=side==='blue'?W*.22:W*.78;
+    const target=units.filter(v=>v.alive&&v.team!==(side)&&v.lane===lane&&Math.abs(v.x-towerX)<W*.16).sort((a,b)=>Math.abs(a.x-towerX)-Math.abs(b.x-towerX))[0];
+    if(target){
+      clocks[lane]=1.15;
+      target.hp-=7;
+      burst(towerX,H*[.24,.5,.76][lane],side==='blue'?'#83d6ff':'#ff9a82');
+      burst(target.x,target.y,side==='blue'?'#83d6ff':'#ff9a82');
+      if(target.hp<=0){target.alive=false;burst(target.x,target.y,'#e8d29b');if(target.team==='blue'&&target.hero)heroRespawn=8;if(side==='blue'){gold+=8;gainXp(1)}}
+    }else clocks[lane]=0;
+  }
+}
 for(const u of units){if(!u.alive)continue;const foes=units.filter(v=>v.alive&&v.team!==u.team&&v.lane===u.lane);let target=null,dist=Infinity;for(const v of foes){const d=Math.hypot(v.x-u.x,v.y-u.y);if(d<dist){dist=d;target=v}}
 if(target&&dist<u.range+7){u.attack-=dt;if(u.attack<=0){u.attack=u.kind==='mage'?.95:u.siege?1.35:u.kind==='knight'?.9:.75;const boosted=u.team==='blue'&&rallyTime>0&&Math.abs(u.x-(units.find(v=>v.team==='blue'&&v.hero&&v.alive)?.x||W*.2))<145;const dealt=u.damage*(boosted?1.5:1)*counterBonus(u,target);target.hp-=dealt;burst(target.x,target.y,boosted?'#f7d47a':u.team==='blue'?'#7fc6ff':'#ff8a79');if(target.hp<=0){target.alive=false;burst(target.x,target.y,'#e8d29b');if(target.team==='blue'&&target.hero)heroRespawn=8;if(u.team==='blue'){gold+=8;gainXp(1)}}}}
 else{const goal=u.team==='blue'?W*.86:W*.14;const dx=goal-u.x;u.x+=Math.sign(dx)*u.speed*dt;u.y+=(H*[.24,.5,.76][u.lane]-u.y)*Math.min(1,dt*2)+Math.sin(elapsed*1.8+u.x*.02)*2*dt;if((u.team==='blue'&&u.x>W*.83)||(u.team==='red'&&u.x<W*.17)){if(u.team==='blue'){if(enemyTowers[u.lane]>0){enemyTowers[u.lane]=Math.max(0,enemyTowers[u.lane]-(u.siege?14:u.hero?8:4));burst(W*.78,H*[.24,.5,.76][u.lane],'#f7d47a');if(enemyTowers[u.lane]===0)say('Enemy tower destroyed in '+['North','Center','South'][u.lane]+' lane!')}else enemyBase-=u.siege?8:u.hero?4:1.5}else{if(playerTowers[u.lane]>0){playerTowers[u.lane]=Math.max(0,playerTowers[u.lane]-(u.siege?14:u.hero?8:4));burst(W*.22,H*[.24,.5,.76][u.lane],'#ff9a82');if(playerTowers[u.lane]===0)say('Your tower fell in '+['North','Center','South'][u.lane]+' lane!')}else playerBase-=u.siege?8:u.hero?4:1.5}u.alive=false;burst(u.x,u.y,'#d8bc78')}}}
