@@ -6,6 +6,7 @@ A free, original browser RTS prototype inspired by the fast lane battles of clas
 Open `index.html` in a modern browser. No build step or dependencies are required.
 
 ## Controls
+- **Choose lane:** tap North, Center, or South before recruiting; units only engage enemies in their lane.
 - **Train footman:** button or keyboard `1` (50 gold)
 - **Upgrade troops:** button or keyboard `2` (starts at 100 gold)
 - **Repair base:** button or keyboard `3` (75 gold)
@@ -20,6 +21,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - **Restart:** button
 
 ## Current prototype
+- Three separate battle lanes: North, Center, and South
+- Select a lane before recruiting troops; enemy recruits are distributed across lanes
 - Automatic blue vs. red troop combat
 - Gold income and troop training
 - Troop upgrades and base repairs
@@ -47,7 +50,7 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 GitHub Pages availability depends on repository/account settings. This prototype is static and does not need a server.
 
 ## Roadmap
-1. Improve combat and pathing.
+1. Improve combat and pathing within each lane.
 2. Add more hero abilities and a fuller economy.
 3. Add map and game settings.
 4. Explore online multiplayer after the single-player core is solid.
