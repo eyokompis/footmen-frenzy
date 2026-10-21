@@ -10,6 +10,9 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - **Upgrade troops:** button or keyboard `2` (starts at 100 gold)
 - **Repair base:** button or keyboard `3` (75 gold)
 - **Train ranger:** button or keyboard `4` (80 gold; ranged attacks)
+- **Train knight:** button (110 gold; tough front-line unit)
+- **Train mage:** button (125 gold; fragile long-range attacker)
+- **Train siege engine:** button (160 gold; slow unit that deals extra base damage)
 - **Hero Strike:** button or keyboard `5` (area damage, 8-second cooldown)
 - **Restart:** button
 
@@ -18,6 +21,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Gold income and troop training
 - Troop upgrades and base repairs
 - Ranger unit with ranged attacks
+- Knight, mage, and siege engine unit types
+- Enemy AI that recruits different units and upgrades its army over time
 - Active Hero Strike ability with cooldown
 - Hero XP and levels gained from both normal kills and Hero Strike
 - Hero respawn after being defeated
@@ -36,7 +41,7 @@ GitHub Pages availability depends on repository/account settings. This prototype
 
 ## Roadmap
 1. Improve combat and pathing.
-2. Add more unit types, hero abilities, and a fuller economy.
+2. Add more hero abilities and a fuller economy.
 3. Add map and game settings.
 4. Explore online multiplayer after the single-player core is solid.
 
