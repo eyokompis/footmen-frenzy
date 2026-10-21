@@ -14,6 +14,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - **Train mage:** button (125 gold; fragile long-range attacker)
 - **Train siege engine:** button (160 gold; slow unit that deals extra base damage)
 - **Hero Strike:** button or keyboard `5` (area damage, 8-second cooldown)
+- **Rally:** button or keyboard `6` (nearby troops deal 50% more damage for 6 seconds; 18-second cooldown)
+- **Heal Pulse:** button or keyboard `7` (heals nearby damaged troops; 20-second cooldown)
 - **Restart:** button
 
 ## Current prototype
@@ -24,6 +26,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Knight, mage, and siege engine unit types
 - Enemy AI that recruits different units and upgrades its army over time
 - Active Hero Strike ability with cooldown
+- Rally ability to temporarily boost nearby troop damage
+- Heal Pulse ability to restore nearby troop health
 - Hero XP and levels gained from both normal kills and Hero Strike
 - Hero respawn after being defeated
 - Separate health indicators for both bases
