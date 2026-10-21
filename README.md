@@ -9,6 +9,7 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - **Choose lane:** tap North, Center, or South before recruiting; units only engage enemies in their lane.
 - **Train footman:** button or keyboard `1` (50 gold)
 - **Upgrade troops:** button or keyboard `2` (starts at 100 gold)
+- **Upgrade barracks:** button (starts at 150 gold; up to 3 levels, faster automatic footman training and a higher troop cap)
 - **Repair base:** button or keyboard `3` (75 gold)
 - **Train ranger:** button or keyboard `4` (80 gold; ranged attacks)
 - **Train knight:** button (110 gold; tough front-line unit)
@@ -28,6 +29,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Surviving towers automatically fire at nearby enemy troops in their own lane
 - Automatic blue vs. red troop combat
 - Gold income and troop training
+- Upgradeable barracks that increase automatic reinforcements and troop capacity
+- Enemy AI can upgrade its barracks to improve reinforcement speed and army capacity
 - Troop upgrades and base repairs
 - Ranger unit with ranged attacks
 - Knight, mage, and siege engine unit types
