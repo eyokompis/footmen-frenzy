@@ -25,6 +25,7 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Separate destructible defensive towers in all lanes
 - Select a lane before recruiting troops; enemy recruits are distributed across lanes
 - Each lane has a defensive tower with its own health; units must destroy the tower before damaging the main base
+- Surviving towers automatically fire at nearby enemy troops in their own lane
 - Automatic blue vs. red troop combat
 - Gold income and troop training
 - Troop upgrades and base repairs
