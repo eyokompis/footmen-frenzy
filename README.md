@@ -6,15 +6,19 @@ A free, original browser RTS prototype inspired by the fast lane battles of clas
 Open `index.html` in a modern browser. No build step or dependencies are required.
 
 ## Controls
-- **Train footman:** button or keyboard `1`
-- **Upgrade troops:** button or keyboard `2`
-- **Repair base:** button or keyboard `3`
+- **Train footman:** button or keyboard `1` (50 gold)
+- **Upgrade troops:** button or keyboard `2` (starts at 100 gold)
+- **Repair base:** button or keyboard `3` (75 gold)
+- **Train ranger:** button or keyboard `4` (80 gold; ranged attacks)
+- **Hero Strike:** button or keyboard `5` (area damage, 8-second cooldown)
 - **Restart:** button
 
 ## Current prototype
 - Automatic blue vs. red troop combat
 - Gold income and troop training
 - Troop upgrades and base repairs
+- Ranger unit with ranged attacks
+- Active Hero Strike ability with cooldown
 - Hero XP and levels
 - Victory/defeat state
 - Responsive touch-friendly layout and keyboard shortcuts
