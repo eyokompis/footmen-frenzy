@@ -19,7 +19,9 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Troop upgrades and base repairs
 - Ranger unit with ranged attacks
 - Active Hero Strike ability with cooldown
-- Hero XP and levels
+- Hero XP and levels gained from both normal kills and Hero Strike
+- Hero respawn after being defeated
+- Separate health indicators for both bases
 - Victory/defeat state
 - Responsive touch-friendly layout and keyboard shortcuts
 
