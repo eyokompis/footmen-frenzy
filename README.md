@@ -10,6 +10,7 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - **Train footman:** button or keyboard `1` (50 gold)
 - **Upgrade troops:** button or keyboard `2` (starts at 100 gold)
 - **Upgrade barracks:** button (starts at 150 gold; up to 3 levels, faster automatic footman training and a higher troop cap)
+- **Upgrade selected tower:** button (starts at 100 gold; strengthens the selected lane's tower, increasing its maximum health, shot damage, and firing speed)
 - **Repair base:** button or keyboard `3` (75 gold)
 - **Train ranger:** button or keyboard `4` (80 gold; ranged attacks)
 - **Train knight:** button (110 gold; tough front-line unit)
@@ -26,6 +27,7 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Enhanced Canvas battlefield with layered dusty roads, grass, shrubs, stones, detailed keep walls and crenellated towers
 - More distinctive unit silhouettes, including knight armor, ranger bows, mage glow, siege wheels and hero crown
 - Separate destructible defensive towers in all lanes
+- Lane-specific tower upgrades: each level adds 10 maximum/current health, +2 shot damage, and faster firing; costs increase by 100 gold per level
 - Select a lane before recruiting troops; enemy recruits are distributed across lanes
 - Each lane has a defensive tower with its own health; units must destroy the tower before damaging the main base
 - Surviving towers automatically fire at nearby enemy troops in their own lane
