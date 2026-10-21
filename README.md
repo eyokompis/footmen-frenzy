@@ -16,6 +16,7 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - **Hero Strike:** button or keyboard `5` (area damage, 8-second cooldown)
 - **Rally:** button or keyboard `6` (nearby troops deal 50% more damage for 6 seconds; 18-second cooldown)
 - **Heal Pulse:** button or keyboard `7` (heals nearby damaged troops; 20-second cooldown)
+- **Unit counters:** knights are strong against ranged units, mages counter knights, and footmen deal bonus damage to siege engines
 - **Restart:** button
 
 ## Current prototype
@@ -25,6 +26,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 - Ranger unit with ranged attacks
 - Knight, mage, and siege engine unit types
 - Enemy AI that recruits different units and upgrades its army over time
+- Adaptive enemy recruitment that responds to the player's unit composition
+- Simple unit-counter bonuses to make army composition more tactical
 - Active Hero Strike ability with cooldown
 - Rally ability to temporarily boost nearby troop damage
 - Heal Pulse ability to restore nearby troop health
