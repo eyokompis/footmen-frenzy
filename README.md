@@ -23,6 +23,8 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 
 ## Current prototype
 - Three separate battle lanes: North, Center, and South
+- Enhanced Canvas battlefield with layered dusty roads, grass, shrubs, stones, detailed keep walls and crenellated towers
+- More distinctive unit silhouettes, including knight armor, ranger bows, mage glow, siege wheels and hero crown
 - Separate destructible defensive towers in all lanes
 - Select a lane before recruiting troops; enemy recruits are distributed across lanes
 - Each lane has a defensive tower with its own health; units must destroy the tower before damaging the main base
