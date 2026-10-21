@@ -22,7 +22,9 @@ Open `index.html` in a modern browser. No build step or dependencies are require
 
 ## Current prototype
 - Three separate battle lanes: North, Center, and South
+- Separate destructible defensive towers in all lanes
 - Select a lane before recruiting troops; enemy recruits are distributed across lanes
+- Each lane has a defensive tower with its own health; units must destroy the tower before damaging the main base
 - Automatic blue vs. red troop combat
 - Gold income and troop training
 - Troop upgrades and base repairs
