@@ -244,39 +244,85 @@ function drawBattlefieldTrim(){
  for(let i=0;i<18;i++){const x=(i*97+W*.17)%Math.max(1,W*.66)+W*.17,y=H*[.24,.5,.76][i%3]+(i%2?1:-1)*(37+(i%4)*7);ctx.save();ctx.translate(x,y);ctx.rotate((i%5-2)*.13);ctx.fillStyle=i%2?'#676554':'#4a4b40';polygon([[-5,-2],[-2,-5],[5,-3],[7,2],[1,4],[-5,2]],ctx.fillStyle,'#88836a');ctx.restore()}
  for(let lane=0;lane<3;lane++){const cy=H*[.24,.5,.76][lane];for(const side of [-1,1]){const x=W*(side<0?.255:.745);ctx.save();ctx.translate(x,cy);ctx.fillStyle='#171b15';ctx.fillRect(-3,-34,6,68);ctx.fillStyle='#8c8266';for(let k=-1;k<=1;k++)ctx.fillRect(-5,k*19-3,10,6);ctx.fillStyle=side<0?'#4b9bd5':'#c75e50';ctx.globalAlpha=.75;ctx.fillRect(-2,-29,4,58);ctx.restore()}}
 }
-function draw(){ctx.clearRect(0,0,W,H);const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#203b3c');sky.addColorStop(1,'#172c2c');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-const mid=H*.5;
-// Atmospheric ground: fixed grass flecks, stones and lane-edge vegetation.
-ctx.fillStyle='#203c2e';ctx.fillRect(0,0,W,H);
-for(let i=0;i<150;i++){const x=(i*83+19)%Math.max(1,W),y=(i*47+7)%Math.max(1,H);ctx.fillStyle=i%3===0?'#4a6941':i%3===1?'#35563a':'#294a34';ctx.globalAlpha=.35;ctx.beginPath();ctx.ellipse(x,y,randStatic(i,2,5),randStatic(i,1,3),randStatic(i,0,2),0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
-for(const laneY of [.24,.5,.76]){
- const cy=H*laneY;
- // Wide dusty road with darker edges and a softly lit center.
- ctx.fillStyle='#18271f';ctx.fillRect(0,cy-38,W,76);ctx.fillStyle='#3f4935';ctx.fillRect(0,cy-32,W,64);
- const road=ctx.createLinearGradient(0,cy-28,0,cy+28);road.addColorStop(0,'#766f50');road.addColorStop(.5,'#8b805a');road.addColorStop(1,'#645e45');ctx.fillStyle=road;ctx.fillRect(0,cy-27,W,54);
- ctx.strokeStyle='#b4a578';ctx.globalAlpha=.45;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,cy-26);ctx.lineTo(W,cy-26);ctx.moveTo(0,cy+26);ctx.lineTo(W,cy+26);ctx.stroke();ctx.globalAlpha=1;
- for(let j=0;j<24;j++){const x=(j*71+laneY*100)%Math.max(1,W),y=cy+Math.sin(j*8.1+laneY)*19;ctx.fillStyle=j%2?'#a99a6c':'#554f3c';ctx.globalAlpha=.28;ctx.beginPath();ctx.ellipse(x,y,randStatic(j+laneY*100,2,7),2,0,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
- if(Math.round(laneY*100)===[24,50,76][playerLane]){ctx.save();ctx.fillStyle='#f5c66a';ctx.globalAlpha=.07;ctx.fillRect(0,cy-27,W,54);ctx.globalAlpha=.95;ctx.strokeStyle='#f5c66a';ctx.lineWidth=2;ctx.shadowColor='#f5c66a';ctx.shadowBlur=8;ctx.strokeRect(3,cy-29,W-6,58);ctx.fillStyle='#f5c66a';ctx.beginPath();ctx.moveTo(W*.105,cy);ctx.lineTo(W*.09,cy-7);ctx.lineTo(W*.09,cy+7);ctx.closePath();ctx.fill();ctx.restore()}
- ctx.strokeStyle='#d2c18b';ctx.lineWidth=1;ctx.setLineDash([9,12]);ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
- ctx.fillStyle='#e6d8ae';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.shadowColor='#101820';ctx.shadowBlur=4;ctx.fillText(laneY===.24?'NORTH LANE':laneY===.5?'CENTER LANE':'SOUTH LANE',W*.5,cy-37);ctx.shadowBlur=0;ctx.fillStyle='#a9b8a0';ctx.globalAlpha=.78;ctx.font='900 8px system-ui';ctx.textAlign='left';ctx.fillText('ALLIANCE',W*.015,cy-12);ctx.textAlign='right';ctx.fillText('HORDE',W*.985,cy-12);ctx.globalAlpha=1;if(Math.round(laneY*100)===[24,50,76][playerLane]){ctx.fillStyle='#ffe0a0';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText('SELECTED',8,cy+19)}ctx.shadowBlur=0;
-}
-// Lane pressure indicators: show where each army is winning at a glance.
-for(let lane=0;lane<3;lane++){
- const cy=H*[.24,.5,.76][lane];
- const blueCount=units.filter(u=>u.alive&&u.team==='blue'&&!u.hero&&u.lane===lane).length;
- const redCount=units.filter(u=>u.alive&&u.team==='red'&&u.lane===lane).length;
- const total=Math.max(1,blueCount+redCount), barW=Math.min(116,W*.24), barH=5, bx=W*.5-barW/2, by=cy-29;
- ctx.fillStyle='#111a16dd';ctx.fillRect(bx-5,by-7,barW+10,20);
- ctx.fillStyle='#101712';ctx.fillRect(bx,by,barW,barH);
- ctx.fillStyle='#65baf2';ctx.fillRect(bx,by,barW*(blueCount/total),barH);
- ctx.fillStyle='#f27664';ctx.fillRect(bx+barW*(blueCount/total),by,barW*(redCount/total),barH);
- ctx.font='700 8px system-ui';ctx.textAlign='left';ctx.fillStyle='#b9e4ff';ctx.fillText('A '+blueCount,bx,by+13);
- ctx.textAlign='right';ctx.fillStyle='#ffc0b5';ctx.fillText(redCount+' H',bx+barW,by+13);
- ctx.textAlign='center';ctx.fillStyle='#e9e2c8';ctx.font='900 8px system-ui';ctx.fillText(blueCount>redCount?'PUSHING':redCount>blueCount?'UNDER PRESSURE':'CONTESTED',W*.5,by+13);
-}
- // Decorative shrubs and scattered rocks outside the roads.
-for(let i=0;i<30;i++){const x=(i*137+41)%Math.max(1,W),y=(i*89+23)%Math.max(1,H);if([.24,.5,.76].some(l=>Math.abs(y-H*l)<39))continue;ctx.fillStyle='#172f25';ctx.beginPath();ctx.ellipse(x,y,randStatic(i,5,12),randStatic(i,3,7),0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#63724a';ctx.beginPath();ctx.arc(x-2,y-2,3,0,Math.PI*2);ctx.fill();if(i%3===0){ctx.fillStyle='#777967';ctx.beginPath();ctx.ellipse(x+14,y+4,4,2,0,0,Math.PI*2);ctx.fill()}}
-drawBattlefieldTrim();
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ // New battlefield pass: a fortified frontier seen from a high RTS camera,
+ // with layered forest, worn flagstones, earthworks and three separate lanes.
+ const ground=ctx.createLinearGradient(0,0,0,H);ground.addColorStop(0,'#263d31');ground.addColorStop(.45,'#3d4a32');ground.addColorStop(1,'#202f28');ctx.fillStyle=ground;ctx.fillRect(0,0,W,H);
+ // Large mottled terrain plates and deterministic tufts make the ground read as painted terrain.
+ for(let i=0;i<240;i++){
+  const x=randStatic(i+11,0,W),y=randStatic(i+421,0,H),r=randStatic(i+77,3,13);
+  ctx.globalAlpha=.12+randStatic(i+5,0,.16);ctx.fillStyle=['#82905b','#101e1a','#b1a16d','#526849'][i%4];
+  ctx.beginPath();ctx.ellipse(x,y,r,r*.42,randStatic(i+22,-1,1),0,Math.PI*2);ctx.fill();
+ }ctx.globalAlpha=1;
+ // Distant tree line on the northern and southern margins, with layered trunks and crowns.
+ for(let edge=0;edge<2;edge++)for(let i=0;i<Math.ceil(W/27)+2;i++){
+  const x=i*27-13+randStatic(i+edge*83,0,14),baseY=edge?H:0;
+  const y=edge?H-randStatic(i+92,12,34):randStatic(i+92,12,34),rad=randStatic(i+33,11,21);
+  ctx.fillStyle='#17271f';ctx.beginPath();ctx.ellipse(x+3,y+5,rad*1.12,rad*.74,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=['#344d35','#40583a','#293f31','#52613b'][i%4];ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#68734a';ctx.globalAlpha=.55;ctx.beginPath();ctx.arc(x-rad*.25,y-rad*.22,rad*.48,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+  ctx.fillStyle='#5e4a32';ctx.fillRect(x-2,edge?y+rad*.45:y-rad*.1,4,rad*.55);
+ }
+ const lanes=[.24,.5,.76];
+ // Each lane is a real earthwork road: shadow trench, stone kerbs, packed earth and scattered paving.
+ for(let lane=0;lane<3;lane++){
+  const cy=H*lanes[lane],selected=lane===playerLane;
+  ctx.fillStyle='#101a16';ctx.fillRect(0,cy-48,W,96);
+  ctx.fillStyle='#59604a';ctx.fillRect(0,cy-43,W,86);
+  ctx.fillStyle='#8c805d';ctx.fillRect(0,cy-36,W,72);
+  const dirt=ctx.createLinearGradient(0,cy-34,0,cy+34);dirt.addColorStop(0,'#746b4c');dirt.addColorStop(.48,'#a09166');dirt.addColorStop(1,'#665d43');ctx.fillStyle=dirt;ctx.fillRect(0,cy-33,W,66);
+  // Rough stone edging, split into individual blocks.
+  for(let side of [-1,1]){
+   const ey=cy+side*39;
+   for(let x=0;x<W;x+=19){
+    ctx.fillStyle=(Math.floor(x/19)+lane)%2?'#656958':'#85836b';ctx.fillRect(x,ey-3,17,6);
+    ctx.strokeStyle='#343d32';ctx.lineWidth=1;ctx.strokeRect(x,ey-3,17,6);
+    ctx.fillStyle='#a29b7b';ctx.fillRect(x+2,ey-2,7,1);
+   }
+  }
+  // Paving slabs and wheel ruts, fixed positions so the terrain does not shimmer.
+  for(let j=0;j<Math.ceil(W/34);j++){
+   const x=(j*34+lane*17)%Math.max(1,W),yy=cy+Math.sin(j*2.7+lane)*24;
+   ctx.fillStyle=j%3===0?'#b3a47b':j%3===1?'#887c5a':'#6e684d';
+   ctx.globalAlpha=.62;ctx.beginPath();ctx.moveTo(x,yy-3);ctx.lineTo(x+randStatic(j+lane*10,8,23),yy-4);ctx.lineTo(x+randStatic(j+lane*30,9,22),yy+3);ctx.lineTo(x+2,yy+4);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+  }
+  ctx.strokeStyle='#c6b487';ctx.globalAlpha=.45;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,cy-35);ctx.lineTo(W,cy-35);ctx.moveTo(0,cy+35);ctx.lineTo(W,cy+35);ctx.stroke();ctx.globalAlpha=1;
+  // Fortified road gates mark the transition from each base's territory.
+  for(const gx of [W*.255,W*.745]){
+   ctx.fillStyle='#18231e';ctx.fillRect(gx-7,cy-47,14,94);
+   for(let by=-1;by<=1;by++){
+    ctx.fillStyle='#8a8b77';ctx.fillRect(gx-6,cy+by*29-11,12,22);
+    ctx.strokeStyle='#3e493e';ctx.strokeRect(gx-6,cy+by*29-11,12,22);
+    ctx.fillStyle='#b4ad8c';ctx.fillRect(gx-4,cy+by*29-9,3,16);
+   }
+   ctx.fillStyle='#45392a';ctx.fillRect(gx-2,cy-46,4,92);
+   ctx.fillStyle='#c2b18a';ctx.fillRect(gx-1,cy-46,2,92);
+  }
+  // Lane identity plate and selection treatment.
+  ctx.fillStyle='#161d18';ctx.fillRect(W*.5-53,cy-46,106,16);ctx.strokeStyle=selected?'#e6c77d':'#8d8a70';ctx.lineWidth=1;ctx.strokeRect(W*.5-53,cy-46,106,16);
+  ctx.fillStyle=selected?'#f5d58b':'#d6cba9';ctx.font='bold 9px Georgia,serif';ctx.textAlign='center';ctx.fillText(['NORTH ROAD','KING’S ROAD','SOUTH ROAD'][lane],W*.5,cy-35);
+  if(selected){ctx.save();ctx.strokeStyle='#f0c76f';ctx.lineWidth=2;ctx.globalAlpha=.9;ctx.strokeRect(2,cy-43,W-4,86);ctx.fillStyle='#e9c36d';ctx.beginPath();ctx.moveTo(W*.105,cy);ctx.lineTo(W*.09,cy-7);ctx.lineTo(W*.09,cy+7);ctx.closePath();ctx.fill();ctx.restore()}
+  // Army pressure shown as a small carved campaign marker, not floating modern UI.
+  const blueCount=units.filter(u=>u.alive&&u.team==='blue'&&!u.hero&&u.lane===lane).length;
+  const redCount=units.filter(u=>u.alive&&u.team==='red'&&u.lane===lane).length;
+  const total=Math.max(1,blueCount+redCount),bw=Math.min(100,W*.2),bx=W*.5-bw/2,by=cy+44;
+  ctx.fillStyle='#1a211a';ctx.fillRect(bx-3,by-2,bw+6,12);ctx.strokeStyle='#928a6d';ctx.strokeRect(bx-3,by-2,bw+6,12);
+  ctx.fillStyle='#376f91';ctx.fillRect(bx,by,bw*(blueCount/total),5);ctx.fillStyle='#9a493d';ctx.fillRect(bx+bw*(blueCount/total),by,bw*(redCount/total),5);
+  ctx.font='bold 8px Georgia,serif';ctx.textAlign='left';ctx.fillStyle='#b7d7e2';ctx.fillText('ALLIANCE '+blueCount,bx,by+10);ctx.textAlign='right';ctx.fillStyle='#e6b4a7';ctx.fillText('HORDE '+redCount,bx+bw,by+10);
+ }
+ // Ruined stonework, roots and scrub occupy the spaces between the roads.
+ for(let i=0;i<46;i++){
+  const x=randStatic(i+600,0,W),y=randStatic(i+800,0,H);
+  if(lanes.some(l=>Math.abs(y-H*l)<55))continue;
+  const size=randStatic(i+990,3,10);
+  ctx.fillStyle='#17271f';ctx.beginPath();ctx.ellipse(x+2,y+3,size*1.2,size*.65,0,0,Math.PI*2);ctx.fill();
+  if(i%3===0){polygon([[x-size,y+size*.3],[x-size*.6,y-size*.6],[x+size*.2,y-size],[x+size,y-size*.1],[x+size*.5,y+size*.6]],'#626858','#92917a');ctx.strokeStyle='#b2aa87';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x-size*.3,y-size*.3);ctx.lineTo(x+size*.2,y-size*.55);ctx.stroke()}
+  else {ctx.fillStyle=i%2?'#2d4930':'#3d5834';ctx.beginPath();ctx.arc(x,y,size,0,Math.PI*2);ctx.fill();ctx.fillStyle='#74804b';ctx.beginPath();ctx.arc(x-size*.2,y-size*.2,size*.38,0,Math.PI*2);ctx.fill()}
+ }
+ // Frame the playfield with a subtle dark vignette, like a painted RTS map.
+ const vignette=ctx.createRadialGradient(W*.5,H*.5,Math.min(W,H)*.18,W*.5,H*.5,Math.max(W,H)*.72);vignette.addColorStop(0,'#00000000');vignette.addColorStop(1,'#0b130f88');ctx.fillStyle=vignette;ctx.fillRect(0,0,W,H);
+ drawBattlefieldTrim();
 drawBase(W*.07,mid,'#4b9bd5',playerBase,barracksLevel);drawBase(W*.93,mid,'#c75e50',enemyBase,enemyBarracksLevel);
 for(let i=0;i<3;i++){drawTower(W*.22,H*[.24,.5,.76][i],'#4b9bd5',playerTowers[i],playerTowerMax[i],playerTowerLevel[i]);drawTower(W*.78,H*[.24,.5,.76][i],'#c75e50',enemyTowers[i],enemyTowerMax[i],enemyUpgradeLevel);}
 for(const u of units){if(!u.alive)continue;ctx.save();const marchPhase=elapsed*(u.speed*.24)+(u.lane*2.1)+(u.team==='blue'?0:Math.PI);const unitScale=u.hero?1.38:u.siege?1.3:1.43;ctx.translate(u.x*(1-unitScale),u.y*(1-unitScale));ctx.scale(unitScale,unitScale);ctx.translate(0,Math.sin(marchPhase)*1.25);if(inspectedUnit===u){ctx.save();ctx.strokeStyle='#ffe28a';ctx.lineWidth=2.5;ctx.shadowColor='#ffe28a';ctx.shadowBlur=12;ctx.beginPath();ctx.ellipse(u.x,u.y+3,u.hero?19:13,u.hero?9:7,0,0,Math.PI*2);ctx.stroke();ctx.restore()}
