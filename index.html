@@ -109,6 +109,38 @@ button:disabled{filter:saturate(.4);opacity:.48}
 #bottom .panel h2{display:flex;align-items:center;gap:5px}
 #bottom .panel h2:after{content:'';height:1px;flex:1;background:linear-gradient(90deg,#6b5a3a,transparent);opacity:.75}
 
+
+/* Third pass: WC3-style portrait, spellbook and troop command grid. */
+#heroPanel{position:relative}
+#heroPanel #heroName{font-family:Georgia,serif;color:#f0d69a;letter-spacing:.02em}
+#heroPanel #heroInfo{color:#c9c5b5}
+#heroPanel #xpbar{background:linear-gradient(90deg,#7cbd9a,#c2e5a0)!important;box-shadow:0 0 5px #8acb9a55}
+#heroControls .actions button{position:relative;min-width:0;min-height:38px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 3px!important;font-family:Georgia,serif;font-size:10px!important;line-height:1.15;white-space:normal!important}
+#heroControls .actions button .gold{font:700 8px system-ui,sans-serif;letter-spacing:.04em}
+#troopControls .actions button{position:relative;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:3px;text-align:left;border-left:2px solid #74613f!important}
+#troopControls .actions button .gold{flex:0 0 auto;font-weight:800}
+#troopControls #siege{border-left-color:#8d7650!important}
+#troopControls #ranger{border-left-color:#688b6b!important}
+#troopControls #knight{border-left-color:#8b9eaa!important}
+#troopControls #mage{border-left-color:#8276b1!important}
+#troopControls #train{border-left-color:#b8a06a!important}
+#battleInfo #laneIntel button{font-weight:800}
+#battleInfo #battleStatus{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+#battleInfo #battleStatus #stats{display:flex;flex:1 1 100%;justify-content:space-between;gap:3px}
+#battleInfo #battleStatus .stat{border:1px solid #514a36;border-radius:3px;background:linear-gradient(#30352f,#1b211e);font-size:9px}
+#battleInfo #pauseBtn{margin-left:auto}
+@media(orientation:landscape) and (max-height:600px){
+ #heroControls .actions button{min-height:29px;font-size:9px!important;padding:3px 2px!important}
+ #heroControls .actions button .gold{font-size:7px}
+ #troopControls .actions button{min-height:25px;padding:3px 4px!important;font-size:9px}
+ #battleInfo #battleStatus #stats{gap:2px}
+ #battleInfo #battleStatus .stat{padding:2px;font-size:8px}
+}
+@media(max-width:650px) and (orientation:portrait){
+ #heroControls .actions button{min-height:34px}
+ #troopControls .actions button{min-height:29px}
+}
+
 </style>
 </head>
 <body>
