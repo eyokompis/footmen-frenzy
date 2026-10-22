@@ -325,53 +325,68 @@ function draw(){
  drawBattlefieldTrim();
 drawBase(W*.07,mid,'#4b9bd5',playerBase,barracksLevel);drawBase(W*.93,mid,'#c75e50',enemyBase,enemyBarracksLevel);
 for(let i=0;i<3;i++){drawTower(W*.22,H*[.24,.5,.76][i],'#4b9bd5',playerTowers[i],playerTowerMax[i],playerTowerLevel[i]);drawTower(W*.78,H*[.24,.5,.76][i],'#c75e50',enemyTowers[i],enemyTowerMax[i],enemyUpgradeLevel);}
-for(const u of units){if(!u.alive)continue;ctx.save();const marchPhase=elapsed*(u.speed*.24)+(u.lane*2.1)+(u.team==='blue'?0:Math.PI);const unitScale=u.hero?1.38:u.siege?1.3:1.43;ctx.translate(u.x*(1-unitScale),u.y*(1-unitScale));ctx.scale(unitScale,unitScale);ctx.translate(0,Math.sin(marchPhase)*1.25);if(inspectedUnit===u){ctx.save();ctx.strokeStyle='#ffe28a';ctx.lineWidth=2.5;ctx.shadowColor='#ffe28a';ctx.shadowBlur=12;ctx.beginPath();ctx.ellipse(u.x,u.y+3,u.hero?19:13,u.hero?9:7,0,0,Math.PI*2);ctx.stroke();ctx.restore()}
- // Small directional ground shadow and a coloured team ring give units more depth.
- ctx.fillStyle='#10150f88';ctx.beginPath();ctx.ellipse(u.x,u.y+7,u.hero?12:9,4,0,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle=u.hero?'#ffe28a':u.team==='blue'?'#9bdcff':'#ffb0a1';ctx.lineWidth=u.hero?2.8:1.5;ctx.beginPath();ctx.ellipse(u.x,u.y+4,u.hero?15:7, u.hero?5:3,0,0,Math.PI*2);ctx.stroke();if(u.hero){ctx.strokeStyle='#ffe28a';ctx.lineWidth=1.5;ctx.globalAlpha=.35+.2*Math.sin(elapsed*5);ctx.beginPath();ctx.ellipse(u.x,u.y+4,20,7,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
- ctx.fillStyle=u.team==='blue'?'#63b7f3':'#f27664';ctx.strokeStyle=u.hero?'#ffe29a':'#e5e8d8';ctx.lineWidth=u.hero?2:1;
+for(const u of units){if(!u.alive)continue;
+ const dir=u.team==='blue'?1:-1, team=u.team==='blue'?'#4b9bd5':'#c75e50', dark=u.team==='blue'?'#245477':'#74352e', cloth=u.team==='blue'?'#367eb1':'#a54239';
+ const phase=elapsed*(u.speed*.24)+u.lane*2.1+(u.team==='blue'?0:Math.PI), bob=Math.sin(phase)*1.4;
+ ctx.save();ctx.translate(u.x,u.y+bob);
+ // Ground contact and selection ring.
+ ctx.fillStyle='#10170fc0';ctx.beginPath();ctx.ellipse(0,8,u.hero?15:u.siege?14:10,4,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle=u.hero?'#f7d47a':u.team==='blue'?'#8fcdf0':'#e9a49a';ctx.lineWidth=u.hero?2.2:1.2;ctx.beginPath();ctx.ellipse(0,5,u.hero?15:u.siege?12:8,3,0,0,Math.PI*2);ctx.stroke();
+ if(inspectedUnit===u){ctx.save();ctx.strokeStyle='#ffe28a';ctx.lineWidth=2;ctx.shadowColor='#ffe28a';ctx.shadowBlur=9;ctx.beginPath();ctx.ellipse(0,5,19,7,0,0,Math.PI*2);ctx.stroke();ctx.restore()}
+ // Unit art uses a consistent three-quarter silhouette, shaded metal and faction cloth.
  if(u.siege){
-   ctx.fillStyle='#514b3d';ctx.fillRect(u.x-9,u.y-4,18,10);ctx.strokeRect(u.x-9,u.y-4,18,10);
-   ctx.fillStyle='#b39a6d';ctx.fillRect(u.x-7,u.y-7,14,4);ctx.beginPath();ctx.moveTo(u.x-4,u.y-6);ctx.lineTo(u.x+8,u.y-14);ctx.stroke();
-   ctx.fillStyle='#34352e';ctx.beginPath();ctx.arc(u.x-5,u.y+7,3,0,Math.PI*2);ctx.arc(u.x+5,u.y+7,3,0,Math.PI*2);ctx.fill();
+  // A compact wheeled battering engine with timber frame, iron bands and a heavy throwing arm.
+  ctx.fillStyle='#342b22';ctx.fillRect(-12,-1,24,8);ctx.strokeStyle='#b7a27a';ctx.lineWidth=1.5;ctx.strokeRect(-12,-1,24,8);
+  for(const wx of [-8,8]){ctx.fillStyle='#1c201d';ctx.beginPath();ctx.arc(wx,8,4,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#a39a7c';ctx.lineWidth=1.3;ctx.stroke();ctx.beginPath();ctx.moveTo(wx-2,8);ctx.lineTo(wx+2,8);ctx.moveTo(wx,6);ctx.lineTo(wx,10);ctx.stroke()}
+  ctx.strokeStyle='#6c5234';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-5,-2);ctx.lineTo(5,-12);ctx.stroke();ctx.strokeStyle='#c1a36b';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-5,-2);ctx.lineTo(5,-12);ctx.stroke();
+  ctx.fillStyle='#5d4830';ctx.fillRect(-4,-13,12,3);ctx.strokeStyle='#d2bd8a';ctx.lineWidth=1;ctx.strokeRect(-4,-13,12,3);
+  ctx.fillStyle=cloth;ctx.fillRect(-11,-5,5,5);ctx.fillStyle='#bba06a';ctx.fillRect(-10,-5,3,5);
  }else if(u.kind==='knight'){
-   // Cavalry: horse body, legs, head and an armored rider with a forward lance.
-   const dir=u.team==='blue'?1:-1;
-   ctx.fillStyle='#5e4936';ctx.beginPath();ctx.ellipse(u.x,u.y+3,10,5,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-   ctx.beginPath();ctx.moveTo(u.x+dir*6,u.y+1);ctx.lineTo(u.x+dir*10,u.y-5);ctx.lineTo(u.x+dir*13,u.y-4);ctx.lineTo(u.x+dir*10,u.y+3);ctx.closePath();ctx.fill();ctx.stroke();
-   ctx.strokeStyle='#d8c6a4';ctx.lineWidth=1.4;for(const leg of [-6,1,5]){ctx.beginPath();ctx.moveTo(u.x+leg,u.y+5);ctx.lineTo(u.x+leg-1,u.y+10);ctx.stroke()}
-   ctx.fillStyle='#aab9c1';ctx.beginPath();ctx.moveTo(u.x-5,u.y-4);ctx.lineTo(u.x,u.y-10);ctx.lineTo(u.x+5,u.y-4);ctx.lineTo(u.x+4,u.y+2);ctx.lineTo(u.x-4,u.y+2);ctx.closePath();ctx.fill();ctx.stroke();
-   ctx.fillStyle=u.team==='blue'?'#3c85b5':'#a8473d';ctx.fillRect(u.x-3,u.y-8,6,6);
-   ctx.strokeStyle='#f1e5c5';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(u.x+dir*3,u.y-7);ctx.lineTo(u.x+dir*15,u.y-12);ctx.stroke();
-   ctx.strokeStyle='#c6a568';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(u.x+dir*3,u.y-5);ctx.lineTo(u.x+dir*6,u.y-8);ctx.stroke();
- }else if(u.ranger){
-   // Ranged infantry with a long rifle silhouette and a small shoulder cape.
-   ctx.fillStyle=u.team==='blue'?'#3c85b5':'#a8473d';ctx.beginPath();ctx.moveTo(u.x,u.y-7);ctx.lineTo(u.x+6,u.y+5);ctx.lineTo(u.x-6,u.y+5);ctx.closePath();ctx.fill();ctx.stroke();
-   ctx.fillStyle='#b7c1bd';ctx.beginPath();ctx.arc(u.x,u.y-6,4,Math.PI,Math.PI*2);ctx.fill();ctx.stroke();
-   ctx.strokeStyle='#342f2a';ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(u.x+(u.team==='blue'?2:-2),u.y-1);ctx.lineTo(u.x+(u.team==='blue'?12:-12),u.y-5);ctx.stroke();
-   ctx.strokeStyle='#d6d5c9';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(u.x+(u.team==='blue'?8:-8),u.y-3);ctx.lineTo(u.x+(u.team==='blue'?12:-12),u.y-5);ctx.stroke();
+  // Horse body, articulated legs, neck barding and a fully separate armoured rider.
+  ctx.fillStyle='#4a3327';ctx.beginPath();ctx.ellipse(-1,3,11,5,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#b6a17c';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#6b5138';ctx.beginPath();ctx.moveTo(5,2);ctx.lineTo(9,-6);ctx.lineTo(13,-8);ctx.lineTo(12,-1);ctx.lineTo(7,5);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle='#262823';ctx.beginPath();ctx.moveTo(11,-7);ctx.lineTo(12,-11);ctx.lineTo(14,-7);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#b8a17c';ctx.lineWidth=1.6;for(const lx of [-8,-2,4,8]){const stride=Math.sin(phase+lx)*2;ctx.beginPath();ctx.moveTo(lx,5);ctx.lineTo(lx+stride,10);ctx.stroke()}
+  ctx.fillStyle=dark;ctx.beginPath();ctx.ellipse(-1,2,7,5,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#d5c5a0';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle=team;ctx.beginPath();ctx.moveTo(-8,-2);ctx.lineTo(-4,-6);ctx.lineTo(3,-5);ctx.lineTo(5,2);ctx.lineTo(-5,4);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle='#aeb8b7';ctx.beginPath();ctx.moveTo(-4,-9);ctx.lineTo(0,-15);ctx.lineTo(5,-10);ctx.lineTo(4,-4);ctx.lineTo(-3,-4);ctx.closePath();ctx.fill();ctx.strokeStyle='#e6ddc4';ctx.stroke();
+  ctx.fillStyle=cloth;ctx.fillRect(-1,-12,4,5);
+  ctx.strokeStyle='#ddd6c1';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(3,-9);ctx.lineTo(dir*17,-15);ctx.stroke();ctx.strokeStyle='#9b855e';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(3,-7);ctx.lineTo(dir*6,-10);ctx.stroke();
+ }else if(u.ranger&&u.kind!=='mage'){
+  // Ranged soldier with leather coat, steel helmet and a long crossbow.
+  ctx.fillStyle='#3c3026';ctx.beginPath();ctx.moveTo(-5,-7);ctx.lineTo(4,-7);ctx.lineTo(7,5);ctx.lineTo(-6,5);ctx.closePath();ctx.fill();ctx.strokeStyle='#a99a78';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle=cloth;ctx.fillRect(-5,-6,8,7);ctx.fillStyle=dark;ctx.fillRect(-4,-4,5,3);
+  ctx.fillStyle='#aeb8b7';ctx.beginPath();ctx.arc(0,-9,4.5,Math.PI,Math.PI*2);ctx.lineTo(4,-7);ctx.lineTo(-4,-7);ctx.closePath();ctx.fill();ctx.strokeStyle='#e5ddc8';ctx.stroke();
+  ctx.fillStyle='#1f2725';ctx.fillRect(dir*2,-5,dir*10,2);ctx.strokeStyle='#d4c7a6';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(dir*9,-8);ctx.lineTo(dir*9,0);ctx.stroke();ctx.beginPath();ctx.moveTo(dir*5,-4);ctx.lineTo(dir*13,-4);ctx.stroke();
+  ctx.fillStyle='#b4a071';ctx.fillRect(-3,4,3,5);ctx.fillRect(2,4,3,5);
+ }else if(u.kind==='mage'){
+  // Robed caster, pointed hood, staff and glowing crystal.
+  ctx.fillStyle='#242e48';ctx.beginPath();ctx.moveTo(-4,-7);ctx.lineTo(0,-15);ctx.lineTo(5,-7);ctx.lineTo(8,6);ctx.lineTo(-8,6);ctx.closePath();ctx.fill();ctx.strokeStyle='#9eb5cb';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.fillStyle=team;ctx.beginPath();ctx.moveTo(-4,-6);ctx.lineTo(0,-12);ctx.lineTo(4,-6);ctx.lineTo(5,4);ctx.lineTo(-5,4);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#c0b7a0';ctx.beginPath();ctx.arc(0,-8,3.5,Math.PI,Math.PI*2);ctx.fill();ctx.strokeStyle='#eee2c6';ctx.stroke();
+  ctx.strokeStyle='#785d3c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(7,6);ctx.lineTo(12,-16);ctx.stroke();ctx.fillStyle='#9ce7ff';ctx.shadowColor='#7bdcff';ctx.shadowBlur=8;ctx.beginPath();ctx.moveTo(12,-20);ctx.lineTo(15,-16);ctx.lineTo(12,-12);ctx.lineTo(9,-16);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
  }else{
-   // Footman silhouette: helmeted infantry with a shield and sword, not a generic blob.
-   ctx.fillStyle=u.team==='blue'?'#3c85b5':'#a8473d';
-   ctx.beginPath();ctx.ellipse(u.x,u.y+1,6,8,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-   // Broad shoulder plates and tunic.
-   ctx.fillStyle=u.team==='blue'?'#8bc9e9':'#e79a85';
-   ctx.fillRect(u.x-6,u.y-2,12,4);
-   ctx.fillStyle='#b8c1bd';ctx.beginPath();ctx.arc(u.x,u.y-5,5.5,Math.PI,Math.PI*2);ctx.lineTo(u.x+5,u.y-3);ctx.lineTo(u.x-5,u.y-3);ctx.closePath();ctx.fill();ctx.stroke();
-   ctx.fillStyle='#d7d9cd';ctx.fillRect(u.x-2,u.y-1,4,5);
-   // Shield on the leading side, marked with the team colour.
-   const shieldX=u.x+(u.team==='blue'? -7:7);
-   ctx.fillStyle='#b8c5c5';ctx.strokeStyle='#f0e5c8';ctx.lineWidth=1;
-   ctx.beginPath();ctx.moveTo(shieldX-3,u.y-4);ctx.lineTo(shieldX+3,u.y-4);ctx.lineTo(shieldX+2,u.y+4);ctx.lineTo(shieldX,u.y+7);ctx.lineTo(shieldX-3,u.y+4);ctx.closePath();ctx.fill();ctx.stroke();
-   ctx.fillStyle=u.team==='blue'?'#3b8bc4':'#b84d42';ctx.fillRect(shieldX-1,u.y-2,2,5);
-   // Sword, held forward toward the opposing army.
-   ctx.strokeStyle='#e9e4d4';ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(u.x+(u.team==='blue'?4:-4),u.y);ctx.lineTo(u.x+(u.team==='blue'?11:-11),u.y-7);ctx.stroke();
-   ctx.strokeStyle='#d2ae68';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(u.x+(u.team==='blue'?3:-3),u.y+1);ctx.lineTo(u.x+(u.team==='blue'?6:-6),u.y-2);ctx.stroke();
+  // Footman with layered plate armour, a raised shield, rivets, sword and team-colour surcoat.
+  ctx.strokeStyle='#292d29';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-3,4);ctx.lineTo(-5,9);ctx.moveTo(3,4);ctx.lineTo(5,9);ctx.stroke();
+  ctx.fillStyle='#4c4132';ctx.fillRect(-6,2,12,5);ctx.fillStyle='#b5b7a8';ctx.fillRect(-6,2,12,3);ctx.fillStyle='#d5c7a2';ctx.fillRect(-5,6,3,3);ctx.fillRect(2,6,3,3);
+  ctx.fillStyle=dark;ctx.beginPath();ctx.moveTo(-7,-5);ctx.lineTo(-4,-9);ctx.lineTo(4,-9);ctx.lineTo(7,-5);ctx.lineTo(6,4);ctx.lineTo(-6,4);ctx.closePath();ctx.fill();ctx.strokeStyle='#d1c6a9';ctx.lineWidth=1.1;ctx.stroke();
+  ctx.fillStyle=cloth;ctx.beginPath();ctx.moveTo(-5,-5);ctx.lineTo(4,-5);ctx.lineTo(4,3);ctx.lineTo(-4,3);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#c1c8c2';ctx.beginPath();ctx.moveTo(-5,-10);ctx.lineTo(-3,-15);ctx.lineTo(3,-15);ctx.lineTo(6,-10);ctx.lineTo(4,-6);ctx.lineTo(-4,-6);ctx.closePath();ctx.fill();ctx.strokeStyle='#f0e5cb';ctx.stroke();
+  ctx.fillStyle='#343c3b';ctx.fillRect(-2,-10,4,3);ctx.fillStyle='#d6c7a3';ctx.fillRect(-1,-10,2,2);
+  // Shield has a steel rim, inset enamel and a raised boss.
+  const sx=-dir*7;ctx.fillStyle='#c4c7b9';ctx.strokeStyle='#eee2c4';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(sx-4,-6);ctx.lineTo(sx+4,-6);ctx.lineTo(sx+3,3);ctx.lineTo(sx,7);ctx.lineTo(sx-3,3);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle=cloth;ctx.beginPath();ctx.moveTo(sx-2,-4);ctx.lineTo(sx+2,-4);ctx.lineTo(sx+1,2);ctx.lineTo(sx,4);ctx.lineTo(sx-1,2);ctx.closePath();ctx.fill();ctx.fillStyle='#e5d2a3';ctx.beginPath();ctx.arc(sx,-1,1.2,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#e4dfd0';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(dir*4,-4);ctx.lineTo(dir*11,-12);ctx.stroke();ctx.strokeStyle='#a98a57';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(dir*3,-2);ctx.lineTo(dir*7,-6);ctx.stroke();
  }
- if(u.kind==='mage'){ctx.fillStyle='#4a6597';ctx.beginPath();ctx.moveTo(u.x-6,u.y-2);ctx.lineTo(u.x,u.y-10);ctx.lineTo(u.x+6,u.y-2);ctx.lineTo(u.x+8,u.y+7);ctx.lineTo(u.x-8,u.y+7);ctx.closePath();ctx.fill();ctx.strokeStyle='#a5e5ff';ctx.lineWidth=1.7;ctx.beginPath();ctx.arc(u.x,u.y-3,10,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#d9c79a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(u.x+7,u.y+5);ctx.lineTo(u.x+12,u.y-12);ctx.stroke();ctx.fillStyle='#b5f0ff';ctx.beginPath();ctx.arc(u.x+12,u.y-13,3,0,Math.PI*2);ctx.fill();ctxginPath();ctx.arc(u.x+5,u.y-8,2.5,0,Math.PI*2);ctx.fill()}
- if(u.hero){ctx.fillStyle='#f7d47a';ctx.beginPath();ctx.moveTo(u.x-8,u.y-7);ctx.lineTo(u.x-6,u.y-17);ctx.lineTo(u.x-2,u.y-12);ctx.lineTo(u.x+2,u.y-18);ctx.lineTo(u.x+6,u.y-12);ctx.lineTo(u.x+8,u.y-7);ctx.closePath();ctx.fill();ctx.strokeStyle='#8e6731';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#fff0b0';ctx.beginPath();ctx.arc(u.x,u.y-10,2,0,Math.PI*2);ctx.fill();}
- if(u.hitFlash>0){ctx.save();ctx.globalAlpha=Math.min(1,u.hitFlash/0.16);ctx.strokeStyle='#fff4d6';ctx.lineWidth=2.5;ctx.shadowColor='#ffffff';ctx.shadowBlur=10;ctx.beginPath();ctx.ellipse(u.x,u.y,u.hero?16:10,u.hero?12:9,0,0,Math.PI*2);ctx.stroke();ctx.restore()}
- const barY=u.y-(u.hero?29:17);if(u.hero){ctx.fillStyle='#14212a';ctx.fillRect(u.x-14,barY-1,28,6);ctx.strokeStyle='#ffe28a';ctx.lineWidth=1;ctx.strokeRect(u.x-14,barY-1,28,6);ctx.fillStyle='#83e0a0';ctx.fillRect(u.x-12,barY+1,24*Math.max(0,u.hp/u.max),2)}else{ctx.fillStyle='#111914';ctx.fillRect(u.x-8,barY,16,4);ctx.fillStyle=u.team==='blue'?'#83e0a0':'#ff9a82';ctx.fillRect(u.x-7,barY+1,14*Math.max(0,u.hp/u.max),2);if(u.kind==='knight'||u.kind==='mage'||u.kind==='siege'){ctx.fillStyle=u.team==='blue'?'#bfe8ff':'#ffd0c8';ctx.font='900 8px system-ui';ctx.textAlign='center';ctx.shadowColor='#111914';ctx.shadowBlur=3;ctx.fillText(u.kind==='knight'?'K':u.kind==='mage'?'M':'S',u.x,u.y+19);ctx.shadowBlur=0}}ctx.restore();
+ if(u.hero){
+  ctx.fillStyle='#c2a04e';ctx.beginPath();ctx.moveTo(-8,-12);ctx.lineTo(-7,-19);ctx.lineTo(-2,-15);ctx.lineTo(1,-21);ctx.lineTo(5,-15);ctx.lineTo(8,-18);ctx.lineTo(8,-12);ctx.closePath();ctx.fill();ctx.strokeStyle='#fff0b0';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.fillStyle='#f4d77f';ctx.shadowColor='#f2ca62';ctx.shadowBlur=7;ctx.beginPath();ctx.arc(0,-14,2,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ }
+ if(u.hitFlash>0){ctx.globalAlpha=Math.min(1,u.hitFlash/.16);ctx.strokeStyle='#fff4d6';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,-3,u.hero?16:11, u.hero?12:9,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1}
+ const barY=u.hero?-31:-21;ctx.fillStyle='#111914';ctx.fillRect(u.hero?-15:-9,barY,u.hero?30:18,4);ctx.fillStyle=u.team==='blue'?'#83e0a0':'#ff9a82';ctx.fillRect(u.hero?-14:-8,barY+1,(u.hero?28:16)*Math.max(0,u.hp/u.max),2);ctx.strokeStyle='#d8ceb0';ctx.lineWidth=.6;ctx.strokeRect(u.hero?-15:-9,barY,u.hero?30:18,4);
+ if(u.hero){ctx.fillStyle='#f5d58b';ctx.font='bold 8px Georgia';ctx.textAlign='center';ctx.fillText('HERO',0,-35)}
+ if(u.kind==='knight'||u.kind==='mage'||u.kind==='siege'){ctx.fillStyle='#f0dfb3';ctx.font='bold 7px Georgia';ctx.textAlign='center';ctx.fillText(u.kind==='knight'?'KNIGHT':u.kind==='mage'?'MAGE':'SIEGE',0,18)}
+ ctx.restore();
  }
 for(const u of units){if(!u.alive||!u.swingTimer)continue;const a=u.swingTimer/.22,dir=u.team==='blue'?1:-1;ctx.save();ctx.globalAlpha=Math.min(1,a*1.7);ctx.strokeStyle=u.team==='blue'?'#c9edff':'#ffd0c6';ctx.lineWidth=u.kind==='knight'?3:2;ctx.lineCap='round';ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(u.x+dir*7,u.y-1,8+(1-a)*4,dir===1?-1.15:Math.PI-.2,dir===1?.7:Math.PI+1.05,dir===-1);ctx.stroke();ctx.restore()}
 for(const p of projectiles){const a=Math.max(0,Math.min(1,p.life/p.maxLife)),t=1-a,x=p.x1+(p.x2-p.x1)*t,y=p.y1+(p.y2-p.y1)*t,dx=p.x2-p.x1,dy=p.y2-p.y1,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;ctx.globalAlpha=a;ctx.lineCap='round';ctx.strokeStyle=p.color;ctx.fillStyle=p.color;if(p.kind==='magic'){ctx.shadowColor=p.color;ctx.shadowBlur=12;ctx.beginPath();ctx.arc(x,y,3.5+Math.sin(t*18)*1.2,0,Math.PI*2);ctx.fill();ctx.globalAlpha=a*.5;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,8+t*4,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0}else if(p.kind==='arrow'||p.kind==='lance'){ctx.lineWidth=p.kind==='lance'?3:1.8;ctx.beginPath();ctx.moveTo(x-dx/len*(p.kind==='lance'?12:8),y-dy/len*(p.kind==='lance'?12:8));ctx.lineTo(x+dx/len*2,y+dy/len*2);ctx.stroke();polygon([[x+dx/len*4,y+dy/len*4],[x-dx/len*2+nx*3,y-dy/len*2+ny*3],[x-dx/len*2-nx*3,y-dy/len*2-ny*3]],p.color)}else if(p.kind==='siege'){ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=a*.55;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-dx/len*13,y-dy/len*13);ctx.lineTo(x,y);ctx.stroke();ctx.shadowBlur=0}else{ctx.lineWidth=p.kind==='tower'?2.8:2;ctx.beginPath();ctx.moveTo(p.x1,p.y1);ctx.lineTo(x,y);ctx.stroke();ctx.beginPath();ctx.arc(x,y,p.kind==='tower'?3:2.2,0,Math.PI*2);ctx.fill()}}ctx.globalAlpha=1;
