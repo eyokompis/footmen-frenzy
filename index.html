@@ -245,6 +245,7 @@ function drawBattlefieldTrim(){
  for(let lane=0;lane<3;lane++){const cy=H*[.24,.5,.76][lane];for(const side of [-1,1]){const x=W*(side<0?.255:.745);ctx.save();ctx.translate(x,cy);ctx.fillStyle='#171b15';ctx.fillRect(-3,-34,6,68);ctx.fillStyle='#8c8266';for(let k=-1;k<=1;k++)ctx.fillRect(-5,k*19-3,10,6);ctx.fillStyle=side<0?'#4b9bd5':'#c75e50';ctx.globalAlpha=.75;ctx.fillRect(-2,-29,4,58);ctx.restore()}}
 }
 function draw(){
+ const mid=H*.5;
  ctx.clearRect(0,0,W,H);
  // New battlefield pass: a fortified frontier seen from a high RTS camera,
  // with layered forest, worn flagstones, earthworks and three separate lanes.
