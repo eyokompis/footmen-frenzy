@@ -101,12 +101,12 @@ for(let i=0;i<150;i++){const x=(i*83+19)%Math.max(1,W),y=(i*47+7)%Math.max(1,H);
 for(const laneY of [.24,.5,.76]){
  const cy=H*laneY;
  // Wide dusty road with darker edges and a softly lit center.
- ctx.fillStyle='#3f4935';ctx.fillRect(0,cy-32,W,64);
+ ctx.fillStyle='#3f4935';ctx.fillRect(0,cy-32,W,64);if(Math.round(laneY*100)===([24,50,76][playerLane])){ctx.save();ctx.strokeStyle='#f5c66a';ctx.lineWidth=2.5;ctx.shadowColor='#f5c66a';ctx.shadowBlur=10;ctx.globalAlpha=.9;ctx.strokeRect(3,cy-30,W-6,60);ctx.fillStyle='#f5c66a';ctx.beginPath();ctx.moveTo(W*.105,cy);ctx.lineTo(W*.09,cy-8);ctx.lineTo(W*.09,cy+8);ctx.closePath();ctx.fill();ctx.restore()}
  const road=ctx.createLinearGradient(0,cy-28,0,cy+28);road.addColorStop(0,'#766f50');road.addColorStop(.5,'#8b805a');road.addColorStop(1,'#645e45');ctx.fillStyle=road;ctx.fillRect(0,cy-27,W,54);
  ctx.strokeStyle='#b4a578';ctx.globalAlpha=.45;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,cy-26);ctx.lineTo(W,cy-26);ctx.moveTo(0,cy+26);ctx.lineTo(W,cy+26);ctx.stroke();ctx.globalAlpha=1;
  for(let j=0;j<24;j++){const x=(j*71+laneY*100)%Math.max(1,W),y=cy+Math.sin(j*8.1+laneY)*19;ctx.fillStyle=j%2?'#a99a6c':'#554f3c';ctx.globalAlpha=.28;ctx.beginPath();ctx.ellipse(x,y,randStatic(j+laneY*100,2,7),2,0,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
  ctx.strokeStyle='#d2c18b';ctx.lineWidth=1;ctx.setLineDash([9,12]);ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
- ctx.fillStyle='#e6d8ae';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.shadowColor='#101820';ctx.shadowBlur=4;ctx.fillText(laneY===.24?'NORTH LANE':laneY===.5?'CENTER LANE':'SOUTH LANE',W*.5,cy-37);ctx.shadowBlur=0;
+ ctx.fillStyle='#e6d8ae';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.shadowColor='#101820';ctx.shadowBlur=4;ctx.fillText(laneY===.24?'NORTH LANE':laneY===.5?'CENTER LANE':'SOUTH LANE',W*.5,cy-37);if(Math.round(laneY*100)===[24,50,76][playerLane]){ctx.fillStyle='#ffe0a0';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText('SELECTED',8,cy+19)}ctx.shadowBlur=0;
 }
 // Decorative shrubs and scattered rocks outside the roads.
 for(let i=0;i<30;i++){const x=(i*137+41)%Math.max(1,W),y=(i*89+23)%Math.max(1,H);if([.24,.5,.76].some(l=>Math.abs(y-H*l)<39))continue;ctx.fillStyle='#172f25';ctx.beginPath();ctx.ellipse(x,y,randStatic(i,5,12),randStatic(i,3,7),0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#63724a';ctx.beginPath();ctx.arc(x-2,y-2,3,0,Math.PI*2);ctx.fill();if(i%3===0){ctx.fillStyle='#777967';ctx.beginPath();ctx.ellipse(x+14,y+4,4,2,0,0,Math.PI*2);ctx.fill()}}
