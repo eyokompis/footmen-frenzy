@@ -141,6 +141,25 @@ button:disabled{filter:saturate(.4);opacity:.48}
  #troopControls .actions button{min-height:29px}
 }
 
+
+/* Fourth pass: make shop costs, unavailable upgrades and purchase feedback easier to read. */
+#contextMenu .actions>button:not(.armory-grid) .gold,
+#contextMenu .armory-grid .gold{font-variant-numeric:tabular-nums;color:#f0c96f}
+#contextMenu .actions>button:not(.armory-grid){display:flex;align-items:center;justify-content:space-between;gap:6px}
+#contextMenu .actions>button:not(.armory-grid) .gold{white-space:nowrap;margin-left:auto}
+#contextMenu button:disabled{background:linear-gradient(#292d29,#1a201e)!important;border-color:#4b493b!important;color:#9c9a8b!important;filter:saturate(.35)}
+#contextMenu button:disabled .gold{color:#aaa18a!important}
+#contextMenu .armory-grid button:disabled{border-style:dashed!important}
+#contextMenu .armory-grid button:not(:disabled){box-shadow:inset 0 1px #ffffff12,0 2px 0 #111713}
+#contextMenu .armory-grid button:not(:disabled):active{transform:translateY(1px)}
+#contextDesc{padding:4px 0 6px;border-bottom:1px solid #514631}
+#toast{font-family:Georgia,serif;border-color:#a1844d;background:linear-gradient(#282c27f5,#111714f5);color:#f4e7c3;box-shadow:0 3px 12px #0008}
+@media(orientation:landscape) and (max-height:600px){
+ #contextMenu{width:min(250px,calc(100% - 12px))}
+ #contextMenu .actions>button:not(.armory-grid){min-height:28px;padding:4px 5px;font-size:9px}
+ #contextMenu .armory-grid button{min-height:56px}
+}
+
 </style>
 </head>
 <body>
