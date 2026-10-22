@@ -289,8 +289,22 @@ for(const u of units){if(!u.alive)continue;ctx.save();const marchPhase=elapsed*(
    ctx.beginPath();ctx.moveTo(u.x,u.y-8);ctx.lineTo(u.x+7,u.y+5);ctx.lineTo(u.x-7,u.y+5);ctx.closePath();ctx.fill();ctx.stroke();
    ctx.strokeStyle='#d6bd8b';ctx.beginPath();ctx.arc(u.x+1,u.y,7,-1.1,1.1);ctx.stroke();
  }else{
-   ctx.beginPath();ctx.ellipse(u.x,u.y,6,7,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-   ctx.fillStyle='#d9d2b5';ctx.fillRect(u.x-4,u.y-2,8,3);
+   // Footman silhouette: helmeted infantry with a shield and sword, not a generic blob.
+   ctx.fillStyle=u.team==='blue'?'#3c85b5':'#a8473d';
+   ctx.beginPath();ctx.ellipse(u.x,u.y+1,6,8,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+   // Broad shoulder plates and tunic.
+   ctx.fillStyle=u.team==='blue'?'#8bc9e9':'#e79a85';
+   ctx.fillRect(u.x-6,u.y-2,12,4);
+   ctx.fillStyle='#b8c1bd';ctx.beginPath();ctx.arc(u.x,u.y-5,5.5,Math.PI,Math.PI*2);ctx.lineTo(u.x+5,u.y-3);ctx.lineTo(u.x-5,u.y-3);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.fillStyle='#d7d9cd';ctx.fillRect(u.x-2,u.y-1,4,5);
+   // Shield on the leading side, marked with the team colour.
+   const shieldX=u.x+(u.team==='blue'? -7:7);
+   ctx.fillStyle='#b8c5c5';ctx.strokeStyle='#f0e5c8';ctx.lineWidth=1;
+   ctx.beginPath();ctx.moveTo(shieldX-3,u.y-4);ctx.lineTo(shieldX+3,u.y-4);ctx.lineTo(shieldX+2,u.y+4);ctx.lineTo(shieldX,u.y+7);ctx.lineTo(shieldX-3,u.y+4);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.fillStyle=u.team==='blue'?'#3b8bc4':'#b84d42';ctx.fillRect(shieldX-1,u.y-2,2,5);
+   // Sword, held forward toward the opposing army.
+   ctx.strokeStyle='#e9e4d4';ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(u.x+(u.team==='blue'?4:-4),u.y);ctx.lineTo(u.x+(u.team==='blue'?11:-11),u.y-7);ctx.stroke();
+   ctx.strokeStyle='#d2ae68';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(u.x+(u.team==='blue'?3:-3),u.y+1);ctx.lineTo(u.x+(u.team==='blue'?6:-6),u.y-2);ctx.stroke();
  }
  if(u.kind==='mage'){ctx.strokeStyle='#a5e5ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(u.x,u.y-3,9,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#b5f0ff';ctx.beginPath();ctx.arc(u.x+5,u.y-8,2.5,0,Math.PI*2);ctx.fill()}
  if(u.hero){ctx.fillStyle='#f7d47a';ctx.beginPath();ctx.moveTo(u.x-8,u.y-7);ctx.lineTo(u.x-6,u.y-17);ctx.lineTo(u.x-2,u.y-12);ctx.lineTo(u.x+2,u.y-18);ctx.lineTo(u.x+6,u.y-12);ctx.lineTo(u.x+8,u.y-7);ctx.closePath();ctx.fill();ctx.strokeStyle='#8e6731';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#fff0b0';ctx.beginPath();ctx.arc(u.x,u.y-10,2,0,Math.PI*2);ctx.fill();}
