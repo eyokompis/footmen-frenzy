@@ -332,9 +332,40 @@ for(const p of projectiles){const a=Math.max(0,Math.min(1,p.life/p.maxLife)),t=1
 for(const p of particles){const a=Math.max(0,Math.min(1,p.life/(p.maxLife||.5)));ctx.globalAlpha=a;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(1,(p.size||2)*.65);ctx.beginPath();ctx.moveTo(p.x-p.vx*.055,p.y-p.vy*.055);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.globalAlpha=a*.45;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,(p.size||2)*1.8,0,Math.PI*2);ctx.fill();ctx.globalAlpha=a;ctx.beginPath();ctx.arc(p.x,p.y,p.size||2,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
 if(ended){ctx.fillStyle='#091217b8';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle=enemyBase<=0?'#ffe29a':'#ff9d8a';ctx.font='900 '+Math.min(34,W*.07)+'px system-ui';ctx.fillText(enemyBase<=0?'VICTORY':'DEFEAT',W/2,H/2);ctx.font='14px system-ui';ctx.fillStyle='#fff';ctx.fillText('Press Restart to play again',W/2,H/2+28)}
 }
-function drawTower(x,y,color,hp,maxHp=40,level=1){ctx.save();ctx.translate(x,y);ctx.scale(1.22,1.22);if(hp>0&&hp<=maxHp*.35){const pulse=.45+.55*(.5+.5*Math.sin(elapsed*7));ctx.shadowColor='#ff543f';ctx.shadowBlur=5+pulse*13;ctx.strokeStyle='#ff674d';ctx.globalAlpha=.45+pulse*.45;ctx.lineWidth=1.5+pulse;ctx.beginPath();ctx.ellipse(0,-7,17+pulse*2,22+pulse*2,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.shadowBlur=0}ctx.fillStyle='#11180f99';ctx.beginPath();ctx.ellipse(0,8,16,7,0,0,Math.PI*2);ctx.fill();if(hp<=0){ctx.fillStyle='#55564f';ctx.strokeStyle='#858274';ctx.lineWidth=1.2;polygon([[-15,4],[-12,-1],[-6,1],[-3,-4],[3,-1],[8,-5],[14,2],[11,6],[-9,6]],'#4b4d47','#77796d');ctx.fillStyle='#77776b';polygon([[-10,1],[-6,-3],[-2,1]],'#77776b');polygon([[1,3],[6,-2],[9,3]],'#696b60');ctx.strokeStyle='#333b38';ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(-2,4);ctx.lineTo(2,1);ctx.stroke();ctx.restore();return}ctx.fillStyle='#696d61';ctx.strokeStyle='#c8c4aa';ctx.lineWidth=1.5;
- // Stone shaft and crenellated crown.
- ctx.fillRect(-9,-11,18,20);ctx.strokeRect(-9,-11,18,20);ctx.fillStyle=color;ctx.fillRect(-12,-16,24,7);ctx.strokeRect(-12,-16,24,7);ctx.fillStyle='#b7b4a0';for(let k=-1;k<=1;k++){ctx.fillRect(k*7-2,-20,4,5)}if(level>1){ctx.strokeStyle=level>=3?'#ffe29a':'#d8e7e9';ctx.lineWidth=1.5;ctx.strokeRect(-13,-18,26,26);ctx.fillStyle=level>=3?'#ffe29a':'#d8e7e9';ctx.fillRect(-2,-31,4,5);if(level>=3){ctx.fillRect(-16,-13,3,7);ctx.fillRect(13,-13,3,7)}}ctx.fillStyle='#111914';ctx.fillRect(-13,-26,26,4);ctx.fillStyle='#83e0a0';ctx.fillRect(-13,-26,26*Math.max(0,hp/maxHp),4);if(hp<maxHp*.35){ctx.strokeStyle='#ff704d';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-8,-8);ctx.lineTo(-2,-2);ctx.lineTo(1,-7);ctx.lineTo(7,-1);ctx.stroke();ctx.fillStyle='#ff654c';ctx.font='bold 8px system-ui';ctx.textAlign='center';ctx.shadowColor='#ff4c37';ctx.shadowBlur=5;ctx.fillText('!',0,-34);ctx.shadowBlur=0}ctx.fillStyle='#ffe3a0';ctx.fillRect(-2,-7,4,5);ctx.restore()}
+function drawTower(x,y,color,hp,maxHp=40,level=1){
+ ctx.save();ctx.translate(x,y);ctx.scale(1.22,1.22);
+ const danger=hp>0&&hp<=maxHp*.35;
+ if(danger){const pulse=.5+.5*Math.sin(elapsed*7);ctx.globalAlpha=.5+pulse*.35;ctx.strokeStyle='#ff654c';ctx.lineWidth=2;ctx.shadowColor='#ff543f';ctx.shadowBlur=8+pulse*8;ctx.beginPath();ctx.ellipse(0,-8,20,27,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.shadowBlur=0}
+ ctx.fillStyle='#10150f99';ctx.beginPath();ctx.ellipse(0,9,21,8,0,0,Math.PI*2);ctx.fill();
+ if(hp<=0){
+  polygon([[-19,6],[-17,-1],[-10,1],[-5,-5],[2,-2],[8,-7],[17,0],[14,7],[-8,8]],'#414840','#777c6d');
+  polygon([[-11,2],[-6,-3],[-2,2]],'#74796b','#969987');polygon([[3,3],[9,-3],[12,3]],'#686f62','#858b78');
+  ctx.strokeStyle='#292f2b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-6,0);ctx.lineTo(-1,5);ctx.lineTo(4,0);ctx.stroke();ctx.restore();return;
+ }
+ // Stone foundation, individually outlined masonry and a deep archer opening.
+ polygon([[-16,7],[-13,-13],[13,-13],[16,7]],'#4c5149','#c1bda5');
+ ctx.fillStyle='#777c6c';ctx.strokeStyle='#3b413b';ctx.lineWidth=1;
+ for(let row=0;row<4;row++){const yy=-11+row*4;ctx.fillRect(-12,yy,24,3.5);ctx.strokeRect(-12,yy,24,3.5);ctx.beginPath();ctx.moveTo(row%2?-5:2,yy);ctx.lineTo(row%2?-5:2,yy+3.5);ctx.stroke();ctx.beginPath();ctx.moveTo(row%2?6:-7,yy);ctx.lineTo(row%2?6:-7,yy+3.5);ctx.stroke()}
+ polygon([[-10,-13],[-10,-22],[10,-22],[10,-13]],'#62695e','#d2cbb0');
+ ctx.fillStyle='#202821';ctx.fillRect(-3,-20,6,8);ctx.fillStyle='#d9d0b4';ctx.fillRect(-1,-19,2,5);
+ // Battlements and a heavy wooden fighting platform.
+ ctx.fillStyle='#8e927e';ctx.strokeStyle='#d3cbb0';ctx.lineWidth=1.2;ctx.fillRect(-15,-25,30,7);ctx.strokeRect(-15,-25,30,7);
+ for(let k=-2;k<=2;k++){ctx.fillStyle=k%2?'#6f7668':'#a1a58e';ctx.fillRect(k*6-2,-29,4,6);ctx.strokeRect(k*6-2,-29,4,6)}
+ ctx.fillStyle='#473a2b';ctx.fillRect(-13,-34,26,7);ctx.strokeStyle='#b89b68';ctx.strokeRect(-13,-34,26,7);
+ ctx.fillStyle=color;ctx.fillRect(-12,-33,24,4);ctx.fillStyle='#f0dca8';ctx.fillRect(-2,-33,4,4);
+ // Roof cap, timber braces, faction pennant and tier ornaments.
+ polygon([[-18,-34],[0,-43],[18,-34]],'#4c3c2b','#e0c89a');
+ polygon([[-13,-35],[0,-41],[13,-35]],color,'#d6c39a');
+ ctx.strokeStyle='#3b2e23';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-11,-13);ctx.lineTo(-11,-3);ctx.moveTo(11,-13);ctx.lineTo(11,-3);ctx.stroke();
+ ctx.fillStyle='#c7b994';ctx.fillRect(-17,-11,4,3);ctx.fillRect(13,-11,4,3);
+ ctx.fillStyle='#3b3026';ctx.fillRect(15,-40,2,20);polygon([[17,-39],[27,-36],[17,-32]],color,'#f1dfb1');
+ if(level>1){ctx.strokeStyle=level>=3?'#f8d985':'#d8e3dc';ctx.lineWidth=2;ctx.strokeRect(-19,-31,38,39);ctx.fillStyle=level>=3?'#f5d17b':'#dce6df';ctx.fillRect(-2,-47,4,6);ctx.fillRect(-21,-19,4,8);ctx.fillRect(17,-19,4,8)}
+ if(level>=3){ctx.fillStyle='#e7c36f';polygon([[-5,-42],[0,-49],[5,-42],[0,-37]],'#e7c36f','#fff0b7');ctx.strokeStyle='#f5d17b';ctx.lineWidth=1;ctx.strokeRect(-22,-33,44,43)}
+ // Health bar remains legible against the busy artwork.
+ ctx.fillStyle='#111914';ctx.fillRect(-15,-53,30,5);ctx.fillStyle='#83e0a0';ctx.fillRect(-14,-52,28*Math.max(0,hp/maxHp),3);ctx.strokeStyle='#d4c9a8';ctx.lineWidth=.8;ctx.strokeRect(-15,-53,30,5);
+ if(danger){ctx.strokeStyle='#ff704d';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-8,-8);ctx.lineTo(-2,-2);ctx.lineTo(1,-7);ctx.lineTo(7,-1);ctx.stroke();ctx.fillStyle='#ff654c';ctx.font='bold 9px serif';ctx.textAlign='center';ctx.fillText('!',0,-57)}
+ ctx.restore();
+}
 function randStatic(n,a,b){return a+((Math.sin(n*12.9898)*43758.5453)%1+1)%1*(b-a)}
 function drawBase(x,y,color,hp,tier=0){ctx.save();ctx.translate(x,y);ctx.scale(1.18,1.18);ctx.fillStyle='#10170f88';ctx.beginPath();ctx.ellipse(0,27,39,13,0,0,Math.PI*2);ctx.fill();
  // Original fantasy barracks: broad timber-and-stone hall, pitched roof, training gate and standards.
