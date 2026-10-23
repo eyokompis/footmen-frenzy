@@ -601,6 +601,23 @@ function makeUnit(u){
  const weapon=new THREE.Group();weapon.position.set(.33,.68,0);const handle=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.55,6),wood);weapon.add(handle);const blade=new THREE.Mesh(new THREE.BoxGeometry(.075,.42,.045),iron);blade.position.y=.38;weapon.add(blade);weapon.rotation.z=-.5;g.add(weapon);
  if(u.kind==='knight'||u.hero){const shield=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.07,6),gold);shield.position.set(-.28,.57,.05);shield.rotation.x=Math.PI/2;g.add(shield);body.scale.set(1.18,1.12,1.15)}
  if(u.kind==='mage'){const orb=new THREE.Mesh(new THREE.IcosahedronGeometry(.13,1),mat('#62dfff',.25,.1));orb.position.set(.3,1.08,0);g.add(orb);const glow=new THREE.PointLight('#4ecbff',1.8,2.5);glow.position.copy(orb.position);g.add(glow)}
+ if(u.kind==='mage'){
+  const robe=new THREE.Mesh(new THREE.ConeGeometry(.29,.48,7),mat(blue?'#263e76':'#542b35',.8));robe.position.set(0,.34,0);robe.castShadow=true;g.add(robe);
+  const hood=new THREE.Mesh(new THREE.SphereGeometry(.18,8,7),mat(blue?'#3455a0':'#792f37'));hood.scale.set(1,1.15,.9);hood.position.set(0,1.02,-.025);g.add(hood);
+  const staff=new THREE.Group();staff.position.set(-.29,.35,0);const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.025,.035,.92,6),wood);shaft.position.y=.42;staff.add(shaft);const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(.11),mat(blue?'#63dfff':'#ff6a52',.2,.15));crystal.position.y=.94;staff.add(crystal);g.add(staff);g.userData.anim.staff=staff;
+ }
+ if(u.kind==='ranger'||u.ranger){
+  const hood=new THREE.Mesh(new THREE.ConeGeometry(.18,.23,6),mat(blue?'#344d38':'#51372b'));hood.position.set(0,1.08,-.015);g.add(hood);
+  const quiver=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.34,7),wood);quiver.position.set(-.17,.79,-.16);quiver.rotation.x=-.25;g.add(quiver);
+  for(let i=0;i<3;i++){const arrow=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,.3,4),iron);arrow.position.set(-.2+i*.035,.98,-.17);arrow.rotation.x=-.15;g.add(arrow)}
+ }
+ if(u.kind==='footman'||u.kind==='soldier'){
+  const belt=new THREE.Mesh(new THREE.BoxGeometry(.37,.075,.28),mat('#4d3426'));belt.position.y=.32;g.add(belt);
+  const buckle=new THREE.Mesh(new THREE.BoxGeometry(.07,.07,.035),gold);buckle.position.set(0,.32,.15);g.add(buckle);
+ }
+ if(u.kind==='siege'){
+  for(const side of [-1,1]){const wheel=new THREE.Mesh(new THREE.TorusGeometry(.23,.045,6,12),wood);wheel.position.set(side*.28,.25,.16);wheel.rotation.y=Math.PI/2;g.add(wheel);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.09,8),iron);hub.position.set(side*.3,.25,.16);hub.rotation.z=Math.PI/2;g.add(hub)}
+ }
  if(!blue){
   const tuskMat=mat('#e6d9b6',.5),leather=mat('#4a3024'),shoulder=mat('#70483a',.55,.2);
   for(const side of [-1,1]){const pauldron=new THREE.Mesh(new THREE.DodecahedronGeometry(.17,0),shoulder);pauldron.position.set(side*.23,.79,0);pauldron.castShadow=true;g.add(pauldron);const tusk=new THREE.Mesh(new THREE.ConeGeometry(.055,.19,5),tuskMat);tusk.position.set(side*.105,.87,.13);tusk.rotation.x=.35;tusk.rotation.z=side*.18;g.add(tusk)}
