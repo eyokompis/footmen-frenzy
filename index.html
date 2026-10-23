@@ -176,7 +176,40 @@ button:disabled{filter:saturate(.4);opacity:.48}
  #contextMenu .armory-grid button{min-height:56px}
 }
 
-#ffFullscreen{margin-left:auto;flex:0 0 auto;padding:6px 10px;border:1px solid #806b46;border-radius:6px;background:#2a2923;color:#f2d99a;font:700 11px system-ui;cursor:pointer;white-space:nowrap}#ffFullscreen:hover{background:#49402e}header{display:flex;align-items:center;gap:8px}#app:fullscreen{width:100vw;height:100vh;height:100dvh;background:#101820}#app:fullscreen #arenaWrap{min-height:0}body.ff-css-fullscreen{overflow:hidden}body.ff-css-fullscreen #app{position:fixed;inset:0;z-index:99999;width:100vw;height:100vh;height:100dvh}body.ff-css-fullscreen #ffFullscreen{color:#fff} @media(max-width:480px){#ffFullscreen{font-size:10px;padding:5px 7px}}</style>
+#ffFullscreen{margin-left:auto;flex:0 0 auto;padding:6px 10px;border:1px solid #806b46;border-radius:6px;background:#2a2923;color:#f2d99a;font:700 11px system-ui;cursor:pointer;white-space:nowrap}#ffFullscreen:hover{background:#49402e}header{display:flex;align-items:center;gap:8px}#app:fullscreen{width:100vw;height:100vh;height:100dvh;background:#101820}#app:fullscreen #arenaWrap{min-height:0}body.ff-css-fullscreen{overflow:hidden}body.ff-css-fullscreen #app{position:fixed;inset:0;z-index:99999;width:100vw;height:100vh;height:100dvh}body.ff-css-fullscreen #ffFullscreen{color:#fff} @media(max-width:480px){#ffFullscreen{font-size:10px;padding:5px 7px}}
+/* Layout correction: keep the whole command bar visible and center economy at the top. */
+#app>header{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:nowrap!important;min-width:0}
+#app>header>.brand{order:1;flex:0 0 auto}
+#app>header>#stats{order:2;flex:1 1 auto!important;min-width:0;display:flex!important;justify-content:center!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;margin:0 auto!important}
+#app>header>#ffFullscreen{order:3;margin-left:0!important;flex:0 0 auto}
+#app>header>#pauseBtn{order:4;flex:0 0 auto;margin-left:0!important}
+#app>header>#stats .stat{white-space:nowrap;min-width:0}
+#bottom{flex:1 1 0!important;min-height:0!important;max-height:none!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:stretch!important;grid-template-columns:minmax(0,.85fr) minmax(0,1.1fr) minmax(0,1.25fr)!important;grid-template-rows:minmax(0,1fr)!important}
+#bottom>.panel{min-width:0!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important}
+#arenaWrap{flex:1 1 0!important;min-height:100px!important}
+#app{min-height:0!important}
+@media(max-width:900px){
+ #app>header{gap:4px!important;padding-left:5px!important;padding-right:5px!important}
+ #app>header>.brand{font-size:11px!important}
+ #app>header>#stats{gap:3px!important}
+ #app>header>#stats .stat{font-size:9px!important;padding:3px 4px!important}
+ #bottom{grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.15fr)!important;gap:4px!important;padding:4px!important}
+}
+@media(max-width:650px) and (orientation:portrait){
+ #app>header{flex-wrap:wrap!important}
+ #app>header>.brand{font-size:11px!important}
+ #app>header>#stats{order:2;flex:1 1 100%!important;justify-content:center!important}
+ #app>header>#ffFullscreen{order:3;margin-left:auto!important}
+ #app>header>#pauseBtn{order:4}
+ #bottom{flex:0 0 43vh!important;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.1fr)!important;grid-template-rows:minmax(0,1fr)!important}
+ #bottom>.panel{padding:4px!important}
+}
+@media(orientation:landscape) and (max-height:600px){
+ #app>header{padding:3px 6px!important}
+ #bottom{flex:0 0 38vh!important;min-height:145px!important;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.15fr)!important}
+ #bottom>.panel{overflow-y:auto!important}
+}
+</style>
 </head>
 <body>
 <div id="rotateNotice"><div class="inner"><div class="symbol">📱 ↻</div><h1>Rotate to landscape</h1><p>Footmen Frenzy is designed for a wide battlefield. Turn your phone sideways to continue.</p></div></div>
