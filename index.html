@@ -641,9 +641,15 @@ function sync(){
  if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h}
  const alive=new Set();
  for(let unitIndex=0;unitIndex<s.units.length;unitIndex++){const u=s.units[unitIndex];const key=u.team+':'+unitIndex+':'+u.kind+':'+(u.hero?'h':'n');alive.add(key);let obj=units.get(key);if(!obj){obj=makeUnit({...u,key});units.set(key,obj)}
- obj.position.set((u.x/s.w-.5)*23,0,(u.y/s.h-.5)*13.5);
+ const px=(u.x/s.w-.5)*23,pz=(u.y/s.h-.5)*13.5;
+ const moved=obj.userData.lastPos?Math.hypot(px-obj.userData.lastPos.x,pz-obj.userData.lastPos.z):0;obj.userData.lastPos={x:px,z:pz};
+ obj.position.set(px,Math.sin(s.elapsed*7+(unitIndex%5))*(moved>.002?.035:.012),pz);
  const direction=u.team==='blue'?1:-1;obj.rotation.y=u.attack>0?Math.sin(s.elapsed*16)*.35:(direction>0?Math.PI/2:-Math.PI/2);
- const a=obj.userData.anim;a.legs.forEach((leg,i)=>leg.rotation.x=Math.sin(s.elapsed*9+ i*Math.PI)*.55);a.weapon.rotation.z=-.5+(u.attack>0?Math.sin(s.elapsed*20)*.7:Math.sin(s.elapsed*5)*.05);
+ const a=obj.userData.anim;const gait=moved>.002?Math.min(1,moved*90):.12;
+ a.legs.forEach((leg,i)=>{leg.rotation.x=Math.sin(s.elapsed*(moved>.002?13:2.4)+i*Math.PI)*(.08+gait*.58)});
+ a.weapon.rotation.z=-.5+(u.attack>0?Math.sin(s.elapsed*20)*.85:Math.sin(s.elapsed*3.5)*.035);
+ if(a.staff){a.staff.rotation.z=Math.sin(s.elapsed*3.2)*.08;if(a.staff.children[1])a.staff.children[1].scale.setScalar(1+.12*Math.sin(s.elapsed*5))}
+ if(a.body){a.body.rotation.z=u.attack>0?Math.sin(s.elapsed*20)*.09:Math.sin(s.elapsed*2.2)*.018}
  obj.userData.hpFill.scale.x=Math.max(.015,Math.min(1,u.hp/u.max));obj.userData.hpFill.position.x=-(1-Math.max(0,Math.min(1,u.hp/u.max)))*.34;obj.visible=true;
  }
  for(const [key,obj] of units){if(!alive.has(key)){scene.remove(obj);units.delete(key)}}
