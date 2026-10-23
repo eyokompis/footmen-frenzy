@@ -536,6 +536,20 @@ try{init();requestAnimationFrame(loop)}catch(err){console.error('Footmen Frenzy 
 #ffZoom{position:absolute;z-index:3;right:12px;top:12px;display:flex;align-items:center;gap:5px;padding:5px;background:linear-gradient(145deg,#29271fef,#111817ed);border:1px solid #9b7a42;border-radius:7px;box-shadow:0 3px 14px #0009;color:#f3d58b;font:700 12px system-ui}#ffZoom button{width:30px;height:29px;padding:0;border:1px solid #8e784d;border-radius:4px;background:linear-gradient(#46463c,#202724);color:#ffe0a0;font-size:20px;cursor:pointer}#ffZoomValue{min-width:42px;text-align:center}@media(max-width:600px){#ffZoom{right:6px;top:6px;gap:3px;padding:3px}#ffZoom button{width:27px;height:27px}#ffZoomValue{min-width:36px}}#ff3d{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;transition:opacity .7s}
 #arenaWrap #game{transition:opacity .7s}
 </style>
+<style>
+/* Classic RTS framing: carved brass borders, dark stone panels and compact command grids */
+header{background:linear-gradient(#37382f,#171a16)!important;border-top:3px ridge #a18a5b!important;border-bottom:2px ridge #6c5939!important}
+.brand{font-family:Georgia,'Times New Roman',serif!important;letter-spacing:.09em!important;text-shadow:1px 2px #000,0 0 8px #c7a25755!important}
+.brand span{color:#e0bb63!important}
+#bottom{background:linear-gradient(#292820,#111512)!important;border-top:3px ridge #9b7d48!important;gap:6px!important;padding:6px!important}
+.panel{background:linear-gradient(135deg,#282b27,#111614)!important;border:2px ridge #75603b!important;border-radius:3px!important;box-shadow:inset 0 0 0 1px #000,0 3px 9px #0008!important}
+.panel h2{font-family:Georgia,'Times New Roman',serif!important;color:#e7c779!important;text-shadow:1px 1px #000;letter-spacing:.07em!important;border-bottom:1px solid #675331!important}
+.panel button{border:1px solid #7b6742!important;border-radius:2px!important;background:linear-gradient(#414139,#1b211d)!important;color:#f0e3c2!important;text-shadow:1px 1px #000}
+.panel button:hover{border-color:#e0bd69!important;background:linear-gradient(#55503b,#25291e)!important}
+#heroName{font-family:Georgia,'Times New Roman',serif!important;text-shadow:1px 2px #000}
+#heroPanel:after{content:'⚔  INVENTORY   ▣  STATUS';display:block;margin-top:9px;padding:7px 5px;border:1px solid #574a32;background:repeating-linear-gradient(90deg,#121714 0 36px,#262922 37px 39px);color:#a89b78;font-size:9px;letter-spacing:.07em}
+#ffZoom{border:2px ridge #927849!important;border-radius:3px!important}
+</style>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 try{
@@ -587,6 +601,17 @@ function makeUnit(u){
  const weapon=new THREE.Group();weapon.position.set(.33,.68,0);const handle=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.55,6),wood);weapon.add(handle);const blade=new THREE.Mesh(new THREE.BoxGeometry(.075,.42,.045),iron);blade.position.y=.38;weapon.add(blade);weapon.rotation.z=-.5;g.add(weapon);
  if(u.kind==='knight'||u.hero){const shield=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.07,6),gold);shield.position.set(-.28,.57,.05);shield.rotation.x=Math.PI/2;g.add(shield);body.scale.set(1.18,1.12,1.15)}
  if(u.kind==='mage'){const orb=new THREE.Mesh(new THREE.IcosahedronGeometry(.13,1),mat('#62dfff',.25,.1));orb.position.set(.3,1.08,0);g.add(orb);const glow=new THREE.PointLight('#4ecbff',1.8,2.5);glow.position.copy(orb.position);g.add(glow)}
+ if(!blue){
+  const tuskMat=mat('#e6d9b6',.5),leather=mat('#4a3024'),shoulder=mat('#70483a',.55,.2);
+  for(const side of [-1,1]){const pauldron=new THREE.Mesh(new THREE.DodecahedronGeometry(.17,0),shoulder);pauldron.position.set(side*.23,.79,0);pauldron.castShadow=true;g.add(pauldron);const tusk=new THREE.Mesh(new THREE.ConeGeometry(.055,.19,5),tuskMat);tusk.position.set(side*.105,.87,.13);tusk.rotation.x=.35;tusk.rotation.z=side*.18;g.add(tusk)}
+  const belt=new THREE.Mesh(new THREE.BoxGeometry(.38,.09,.29),leather);belt.position.y=.29;g.add(belt);
+  const backBanner=new THREE.Mesh(new THREE.PlaneGeometry(.32,.4),mat('#8e3329'));backBanner.position.set(-.03,.82,-.18);g.add(backBanner);
+ }else{
+  const crest=new THREE.Mesh(new THREE.BoxGeometry(.07,.22,.04),gold);crest.position.set(-.12,.73,-.15);g.add(crest);
+ }
+ if(u.kind==='ranger'||u.ranger){const bow=new THREE.Mesh(new THREE.TorusGeometry(.24,.025,5,12,Math.PI),wood);bow.position.set(-.28,.66,.04);bow.rotation.z=Math.PI/2;g.add(bow)}
+ if(u.kind==='knight'){const plume=new THREE.Mesh(new THREE.ConeGeometry(.08,.3,5),mat(blue?'#e0d4aa':'#5a1e18'));plume.position.y=1.25;plume.rotation.z=.2;g.add(plume)}
+
  if(u.kind==='siege'){const barrel=new THREE.Mesh(new THREE.CylinderGeometry(.23,.28,.75,8),wood);barrel.rotation.z=Math.PI/2;barrel.position.y=.55;g.add(barrel)}
  if(u.hero){const ring=new THREE.Mesh(new THREE.TorusGeometry(.42,.035,6,24),gold);ring.rotation.x=Math.PI/2;ring.position.y=.06;g.add(ring);const crown=new THREE.Mesh(new THREE.ConeGeometry(.2,.22,5),gold);crown.position.y=1.32;g.add(crown)}
  const hpBack=new THREE.Mesh(new THREE.PlaneGeometry(.72,.075),mat('#211d1a'));hpBack.position.set(0,1.48,0);g.add(hpBack);const hpFill=new THREE.Mesh(new THREE.PlaneGeometry(.68,.045),mat(blue?'#56d5a0':'#ff6657',.55));hpFill.position.set(0,1.48,.012);g.add(hpFill);
