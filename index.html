@@ -575,7 +575,7 @@ function sync(){
  const rect=wrap.getBoundingClientRect();const w=Math.max(1,rect.width),h=Math.max(1,rect.height);
  if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h}
  const alive=new Set();
- for(const u of s.units){const key=u.team+':'+Math.round(u.x*10)+':'+u.kind+':'+(u.hero?'h':'n');alive.add(key);let obj=units.get(key);if(!obj){obj=makeUnit({...u,key});units.set(key,obj)}
+ for(let unitIndex=0;unitIndex<s.units.length;unitIndex++){const u=s.units[unitIndex];const key=u.team+':'+unitIndex+':'+u.kind+':'+(u.hero?'h':'n');alive.add(key);let obj=units.get(key);if(!obj){obj=makeUnit({...u,key});units.set(key,obj)}
  obj.position.set((u.x/s.w-.5)*23,0,(u.y/s.h-.5)*13.5);
  const direction=u.team==='blue'?1:-1;obj.rotation.y=u.attack>0?Math.sin(s.elapsed*16)*.35:(direction>0?Math.PI/2:-Math.PI/2);
  const a=obj.userData.anim;a.legs.forEach((leg,i)=>leg.rotation.x=Math.sin(s.elapsed*9+ i*Math.PI)*.55);a.weapon.rotation.z=-.5+(u.attack>0?Math.sin(s.elapsed*20)*.7:Math.sin(s.elapsed*5)*.05);
