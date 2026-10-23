@@ -184,12 +184,19 @@ button:disabled{filter:saturate(.4);opacity:.48}
 <div id="app">
 <header><div class="brand">⚔️ FOOTMEN <span>FRENZY</span> <small style="font-size:10px;color:#9eafb1">LANES</small></div></header>
 <div id="arenaWrap"><canvas id="game"></canvas><canvas id="ff3d" aria-hidden="true"></canvas><div id="ffZoom" aria-label="Battlefield zoom"><button type="button" id="ffZoomOut" aria-label="Zoom out">−</button><span id="ffZoomValue">180%</span><button type="button" id="ffZoomIn" aria-label="Zoom in">+</button><button type="button" id="ffZoomReset" aria-label="Reset zoom">⌂</button></div><div id="toast"></div><section id="contextMenu" class="overlayPanel" hidden><button class="closeOverlay" id="closeContext">✕</button><h2 id="contextTitle">Keep</h2><p id="contextDesc">Base options</p><div class="actions" id="contextActions"><button id="upgrade">⬆ Troop upgrade <span class="gold">100g</span></button><button id="barracks">🏕 Barracks <span class="gold">150g</span></button><button id="heal">🛡 Repair <span class="gold">75g</span></button><button id="towerUpgrade">🏰 Tower + <span class="gold">100g</span></button></div></section><section id="pauseMenu" class="overlayPanel" hidden><h2>PAUSED</h2><p>Take a breath. The battlefield can wait.</p><div class="actions"><button id="resumeBtn">▶ Resume</button><button id="reset">↻ Restart battle</button><button id="soundToggle" style="grid-column:1/-1">🔊 Sound: ON</button><button id="speedToggle" style="grid-column:1/-1">⏩ Game speed: 1×</button></div></section></div>
-<div id="bottom">
-<section class="panel" id="heroPanel"><h2 id="inspectTitle">HERO / UNIT</h2><div style="font-size:13px;font-weight:850" id="heroName">Captain</div><p id="heroInfo">Level 1 · 0 / 5 XP</p><div style="height:6px;background:#34444a;border-radius:6px;overflow:hidden"><div id="xpbar" style="height:100%;width:0;background:#83d6d0"></div></div><p id="inspectDetails">Select a unit on the battlefield to inspect its stats.</p><button id="showHero" style="width:100%;font-size:10px;padding:5px;margin-top:3px">Show hero</button></section>
+<div id="bottom"><div id="ffMinimapHost" hidden></div>
+<section class="panel" id="heroPanel"><h2 id="inspectTitle">HERO / UNIT</h2><div id="ffPortrait" aria-label="Selected unit portrait">♟</div><div style="font-size:13px;font-weight:850" id="heroName">Captain</div><p id="heroInfo">Level 1 · 0 / 5 XP</p><div style="height:6px;background:#34444a;border-radius:6px;overflow:hidden"><div id="xpbar" style="height:100%;width:0;background:#83d6d0"></div></div><p id="inspectDetails">Select a unit on the battlefield to inspect its stats.</p><button id="showHero" style="width:100%;font-size:10px;padding:5px;margin-top:3px">Show hero</button></section>
 <section class="panel" id="heroControls"><h2>HERO</h2><div class="actions"><button id="ability">✨ Strike <span class="gold">Ready</span></button><button id="rally">📣 Rally <span class="gold">Ready</span></button><button id="healPulse">💚 Heal <span class="gold">Ready</span></button></div></section><section class="panel" id="troopControls"><h2>TROOP COMMAND</h2><div class="lanes" aria-label="Choose reinforcement lane"><button type="button" data-lane="0">🌲 NORTH</button><button type="button" data-lane="1" class="active">⚔ CENTER</button><button type="button" data-lane="2">⛰ SOUTH</button></div><div class="actions"><button id="train" title="Footman · Cheap frontline unit. Deals bonus damage to siege engines.">⚔️ Footman <span class="gold">50g</span></button><button id="ranger" title="Ranger · Long-range damage. Vulnerable to knights.">🏹 Ranger <span class="gold">80g</span></button><button id="knight" title="Knight · Heavy melee unit. Counters rangers and mages.">🛡 Knight <span class="gold">110g</span></button><button id="mage" title="Mage · Long-range magic. Counters knights, but is fragile.">🔮 Mage <span class="gold">125g</span></button><button id="siege" title="Siege engine · Slow, long-range specialist for destroying towers and keeps.">🪨 Siege <span class="gold">160g</span></button></div><div id="status">Choose a lane and recruit. Destroy that lane’s tower to open a path to the enemy base.</div></section>
 <section class="panel" id="battleInfo"><h2>Battlefield</h2><div id="laneIntel" style="display:grid;gap:3px;margin:3px 0 4px"></div><div id="battleStatus"><div id="stats"><div class="stat">🪙 <b id="gold">100</b></div><div class="stat">👥 <b id="troops">0</b></div><div class="stat">🛡️ <b id="base">100%</b></div><div class="stat">🏰 <b id="enemyBase">100%</b></div><div class="stat">⏱ <b id="time">0:00</b></div></div><button id="pauseBtn" aria-label="Pause menu">Ⅱ MENU</button></div><p><span style="color:#7fc6ff">● Blue</span> your forces · <span style="color:#ff8a79">● Red</span> enemy</p><p>Tap your keep for upgrades and repairs, or tap one of your towers to improve its defenses. Select a lane in this battlefield overview before recruiting.</p><p>PC: click commands · keys <b>1</b> footman, <b>2</b> upgrade, <b>3</b> repair, <b>4</b> ranger, <b>5</b> hero strike, <b>6</b> rally, <b>7</b> heal pulse.</p></section>
 </div></div>
 <script>
+function setupClassicHUD(){
+ const header=document.querySelector('#app>header'),stats=document.getElementById('stats'),pause=document.getElementById('pauseBtn'),battle=document.getElementById('battleInfo');
+ if(header&&stats&&!header.contains(stats)){header.appendChild(stats);if(pause)header.appendChild(pause)}
+ const host=document.getElementById('ffMinimapHost');
+ if(host&&battle){host.hidden=false;host.id='ffMiniWrap';const canvas=document.createElement('canvas');canvas.id='ffMiniMap';canvas.width=320;canvas.height=110;canvas.setAttribute('aria-label','Minimap showing lanes, towers and units');host.appendChild(canvas);battle.insertBefore(host,battle.querySelector('#laneIntel'))}
+}
+window.addEventListener('DOMContentLoaded',setupClassicHUD);
 function requestLandscape(){try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}window.addEventListener('load',requestLandscape);document.addEventListener('pointerdown',requestLandscape,{once:true});
 
 (()=>{
@@ -549,6 +556,45 @@ header{background:linear-gradient(#37382f,#171a16)!important;border-top:3px ridg
 #heroName{font-family:Georgia,'Times New Roman',serif!important;text-shadow:1px 2px #000}
 #heroPanel:after{content:'⚔  INVENTORY   ▣  STATUS';display:block;margin-top:9px;padding:7px 5px;border:1px solid #574a32;background:repeating-linear-gradient(90deg,#121714 0 36px,#262922 37px 39px);color:#a89b78;font-size:9px;letter-spacing:.07em}
 #ffZoom{border:2px ridge #927849!important;border-radius:3px!important}
+
+/* WC3-inspired command interface: economy header, minimap, selected portrait and command grid */
+#app{background:#111!important}
+header{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:5px 12px!important;flex-wrap:wrap}
+#stats{display:flex!important;align-items:center;gap:7px!important;flex-wrap:wrap}
+.stat{background:linear-gradient(#39392e,#171a16)!important;border:1px solid #8e7547!important;border-radius:2px!important;padding:5px 9px!important;color:#e6d5a8!important}
+#battleStatus{display:none!important}
+#arenaWrap{flex:1 1 auto;min-height:180px}
+#bottom{flex:0 0 245px;max-height:34vh;min-height:210px;display:grid!important;grid-template-columns:minmax(190px,.8fr) minmax(250px,1.1fr) minmax(330px,1.65fr)!important;grid-template-rows:1fr;gap:7px!important;padding:7px!important;overflow:hidden}
+#battleInfo{grid-column:1;grid-row:1;display:flex!important;flex-direction:column;min-width:0;overflow:hidden}
+#battleInfo h2{font-size:12px}
+#battleInfo>p{display:none!important}
+#ffMiniWrap{display:flex;flex:1;min-height:90px;flex-direction:column;gap:4px}
+#ffMiniMap{width:100%;height:100%;min-height:90px;display:block;border:2px ridge #8d7547;background:#080d0d;image-rendering:pixelated}
+#laneIntel{margin-top:5px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important}
+#laneIntel button{font-size:8px!important}
+#heroPanel{grid-column:2;grid-row:1;min-width:0;display:grid;grid-template-columns:94px minmax(0,1fr);grid-template-rows:auto auto auto auto 1fr auto;gap:3px 9px;align-content:start;overflow:hidden}
+#heroPanel h2{grid-column:1/-1;margin:0 0 3px}
+#ffPortrait{grid-column:1;grid-row:2 / span 3;width:90px;height:105px;border:2px ridge #9b7c47;background:radial-gradient(ellipse at 50% 35%,#7b6846,#1c2422 70%);display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:inset 0 0 12px #000}
+#heroName{grid-column:2;grid-row:2;font-size:15px!important;color:#f0d58b}
+#heroInfo{grid-column:2;grid-row:3;margin:0!important}
+#heroPanel>div[style*="height:6px"]{grid-column:2;grid-row:4}
+#inspectDetails{grid-column:1/-1;grid-row:5;overflow:auto;font-size:11px!important;line-height:1.4!important;margin:5px 0!important}
+#showHero{grid-column:1/-1;grid-row:6}
+#heroPanel:after{display:none!important}
+#heroControls{grid-column:3;grid-row:1;min-width:0;overflow:auto}
+#troopControls{grid-column:3;grid-row:1;min-width:0;overflow:auto;padding-top:100px!important}
+#heroControls{height:92px;position:relative;z-index:2;background:linear-gradient(#292b25,#131713)!important}
+#heroControls .actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+#heroControls .actions button{font-size:10px!important;min-height:35px}
+#troopControls h2{position:absolute;top:98px}
+#troopControls .lanes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+#troopControls .lanes button{font-size:9px!important;padding:5px 2px!important}
+#troopControls .actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+#troopControls .actions button{min-height:42px;font-size:11px!important;white-space:normal!important}
+#status{font-size:10px!important;line-height:1.2!important;margin-top:4px}
+#pauseBtn{border:1px solid #927849;background:linear-gradient(#414139,#1b211d);color:#f0e3c2;padding:5px 10px}
+@media(max-width:800px){#bottom{grid-template-columns:minmax(120px,.7fr) minmax(170px,1fr) minmax(230px,1.4fr)!important;flex-basis:220px}#heroPanel{grid-template-columns:65px minmax(0,1fr)}#ffPortrait{width:62px;height:82px;font-size:35px}#troopControls .actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-height:650px){#bottom{flex-basis:190px;min-height:175px}#arenaWrap{min-height:120px}#heroPanel{grid-template-columns:70px minmax(0,1fr)}#ffPortrait{width:67px;height:78px;font-size:35px}}
 </style>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
