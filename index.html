@@ -190,13 +190,23 @@ button:disabled{filter:saturate(.4);opacity:.48}
 <section class="panel" id="battleInfo"><h2>Battlefield</h2><div id="laneIntel" style="display:grid;gap:3px;margin:3px 0 4px"></div><div id="battleStatus"><div id="stats"><div class="stat">🪙 <b id="gold">100</b></div><div class="stat">👥 <b id="troops">0</b></div><div class="stat">🛡️ <b id="base">100%</b></div><div class="stat">🏰 <b id="enemyBase">100%</b></div><div class="stat">⏱ <b id="time">0:00</b></div></div><button id="pauseBtn" aria-label="Pause menu">Ⅱ MENU</button></div><p><span style="color:#7fc6ff">● Blue</span> your forces · <span style="color:#ff8a79">● Red</span> enemy</p><p>Tap your keep for upgrades and repairs, or tap one of your towers to improve its defenses. Select a lane in this battlefield overview before recruiting.</p><p>PC: click commands · keys <b>1</b> footman, <b>2</b> upgrade, <b>3</b> repair, <b>4</b> ranger, <b>5</b> hero strike, <b>6</b> rally, <b>7</b> heal pulse.</p></section>
 </div></div>
 <script>
+function drawClassicMinimap(){
+ const c=document.getElementById('ffMiniMap');if(!c)return;const x=c.getContext('2d'),w=c.width,h=c.height;
+ x.fillStyle='#17231b';x.fillRect(0,0,w,h);
+ x.fillStyle='#3d4936';for(let i=0;i<3;i++){const y=[.24,.5,.76][i]*h;x.fillRect(0,y-7,w,14);x.fillStyle='#746849';for(let n=0;n<16;n++)x.fillRect(n*w/16,y-1,8,2);x.fillStyle='#3d4936'}
+ x.strokeStyle='#a38a55';x.lineWidth=2;x.strokeRect(1,1,w-2,h-2);
+ const st=window.__ffRenderState;if(st&&st.units){for(let i=0;i<3;i++){const y=[.24,.5,.76][i]*h;x.fillStyle='#78b7e9';x.fillRect(w*.07-4,y-5,8,10);x.fillStyle='#e46a59';x.fillRect(w*.93-4,y-5,8,10);x.fillStyle='#6c8b5b';x.fillRect(w*.22-2,y-3,4,6);x.fillStyle='#8c6b52';x.fillRect(w*.78-2,y-3,4,6)}
+ for(const u of st.units){x.fillStyle=u.team==='blue'?'#75c9ff':'#ff7668';const ux=Math.max(3,Math.min(w-3,u.x/st.w*w)),uy=Math.max(3,Math.min(h-3,u.y/st.h*h));x.fillRect(ux-2,uy-2,u.hero?5:3,u.hero?5:3)}
+ }
+ requestAnimationFrame(drawClassicMinimap);
+}
 function setupClassicHUD(){
  const header=document.querySelector('#app>header'),stats=document.getElementById('stats'),pause=document.getElementById('pauseBtn'),battle=document.getElementById('battleInfo');
  if(header&&stats&&!header.contains(stats)){header.appendChild(stats);if(pause)header.appendChild(pause)}
  const host=document.getElementById('ffMinimapHost');
  if(host&&battle){host.hidden=false;host.id='ffMiniWrap';const canvas=document.createElement('canvas');canvas.id='ffMiniMap';canvas.width=320;canvas.height=110;canvas.setAttribute('aria-label','Minimap showing lanes, towers and units');host.appendChild(canvas);battle.insertBefore(host,battle.querySelector('#laneIntel'))}
 }
-window.addEventListener('DOMContentLoaded',setupClassicHUD);
+window.addEventListener('DOMContentLoaded',()=>{setupClassicHUD();drawClassicMinimap()});
 function requestLandscape(){try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}window.addEventListener('load',requestLandscape);document.addEventListener('pointerdown',requestLandscape,{once:true});
 
 (()=>{
