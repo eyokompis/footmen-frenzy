@@ -184,10 +184,15 @@ button:disabled{filter:saturate(.4);opacity:.48}
 #app>header>#ffFullscreen{order:3;margin-left:0!important;flex:0 0 auto}
 #app>header>#pauseBtn{order:4;flex:0 0 auto;margin-left:0!important}
 #app>header>#stats .stat{white-space:nowrap;min-width:0}
-#bottom{flex:1 1 0!important;min-height:0!important;max-height:none!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:stretch!important;grid-template-columns:minmax(0,.85fr) minmax(0,1.1fr) minmax(0,1.25fr)!important;grid-template-rows:minmax(0,1fr)!important}
-#bottom>.panel{min-width:0!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important}
-#arenaWrap{flex:1 1 0!important;min-height:100px!important}
+#bottom{flex:0 0 clamp(175px,29vh,245px)!important;min-height:175px!important;max-height:34vh!important;height:auto!important;overflow:hidden!important;align-content:stretch!important;grid-template-columns:minmax(170px,.8fr) minmax(220px,1fr) minmax(270px,1.25fr)!important;grid-template-rows:minmax(0,1fr)!important}
+#bottom>.panel{min-width:0!important;min-height:0!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important}
+#arenaWrap{flex:1 1 auto!important;min-height:0!important}
 #app{min-height:0!important}
+#ffMiniWrap{max-width:100%!important;overflow:hidden!important}
+#ffMiniMap{display:block!important;width:100%!important;height:auto!important;max-height:90px!important;object-fit:contain}
+@media(max-width:900px){#bottom{grid-template-columns:minmax(130px,.75fr) minmax(170px,1fr) minmax(210px,1.2fr)!important;flex-basis:clamp(170px,32vh,230px)!important}}
+@media(max-width:650px) and (orientation:portrait){#bottom{flex:0 0 36vh!important;min-height:165px!important;max-height:38vh!important;grid-template-columns:minmax(0,.78fr) minmax(0,1fr) minmax(0,1.08fr)!important}#bottom>.panel{padding:4px!important}}
+@media(orientation:landscape) and (max-height:600px){#bottom{flex:0 0 32vh!important;min-height:135px!important;max-height:38vh!important;grid-template-columns:minmax(130px,.75fr) minmax(180px,1fr) minmax(220px,1.2fr)!important}}
 @media(max-width:900px){
  #app>header{gap:4px!important;padding-left:5px!important;padding-right:5px!important}
  #app>header>.brand{font-size:11px!important}
