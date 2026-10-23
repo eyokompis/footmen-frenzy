@@ -406,6 +406,21 @@ for(const u of units){if(!u.alive)continue;
 for(const u of units){if(!u.alive||!u.swingTimer)continue;const a=u.swingTimer/.22,dir=u.team==='blue'?1:-1;ctx.save();ctx.globalAlpha=Math.min(1,a*1.7);ctx.strokeStyle=u.team==='blue'?'#c9edff':'#ffd0c6';ctx.lineWidth=u.kind==='knight'?3:2;ctx.lineCap='round';ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(u.x+dir*7,u.y-1,8+(1-a)*4,dir===1?-1.15:Math.PI-.2,dir===1?.7:Math.PI+1.05,dir===-1);ctx.stroke();ctx.restore()}
 for(const p of projectiles){const a=Math.max(0,Math.min(1,p.life/p.maxLife)),t=1-a,x=p.x1+(p.x2-p.x1)*t,y=p.y1+(p.y2-p.y1)*t,dx=p.x2-p.x1,dy=p.y2-p.y1,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len;ctx.globalAlpha=a;ctx.lineCap='round';ctx.strokeStyle=p.color;ctx.fillStyle=p.color;if(p.kind==='magic'){ctx.shadowColor=p.color;ctx.shadowBlur=12;ctx.beginPath();ctx.arc(x,y,3.5+Math.sin(t*18)*1.2,0,Math.PI*2);ctx.fill();ctx.globalAlpha=a*.5;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,8+t*4,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0}else if(p.kind==='arrow'||p.kind==='lance'){ctx.lineWidth=p.kind==='lance'?3:1.8;ctx.beginPath();ctx.moveTo(x-dx/len*(p.kind==='lance'?12:8),y-dy/len*(p.kind==='lance'?12:8));ctx.lineTo(x+dx/len*2,y+dy/len*2);ctx.stroke();polygon([[x+dx/len*4,y+dy/len*4],[x-dx/len*2+nx*3,y-dy/len*2+ny*3],[x-dx/len*2-nx*3,y-dy/len*2-ny*3]],p.color)}else if(p.kind==='siege'){ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=a*.55;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-dx/len*13,y-dy/len*13);ctx.lineTo(x,y);ctx.stroke();ctx.shadowBlur=0}else{ctx.lineWidth=p.kind==='tower'?2.8:2;ctx.beginPath();ctx.moveTo(p.x1,p.y1);ctx.lineTo(x,y);ctx.stroke();ctx.beginPath();ctx.arc(x,y,p.kind==='tower'?3:2.2,0,Math.PI*2);ctx.fill()}}ctx.globalAlpha=1;
 for(const p of particles){const a=Math.max(0,Math.min(1,p.life/(p.maxLife||.5)));ctx.globalAlpha=a;ctx.strokeStyle=p.color;ctx.lineWidth=Math.max(1,(p.size||2)*.65);ctx.beginPath();ctx.moveTo(p.x-p.vx*.055,p.y-p.vy*.055);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.globalAlpha=a*.45;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,(p.size||2)*1.8,0,Math.PI*2);ctx.fill();ctx.globalAlpha=a;ctx.beginPath();ctx.arc(p.x,p.y,p.size||2,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
+// Cinematic lighting pass: faction bounce-light, mage sparks, and a restrained battlefield vignette.
+ctx.save();ctx.globalCompositeOperation='screen';
+for(const u of units){if(!u.alive)continue;
+ const radius=u.hero?25:u.kind==='mage'?18:u.kind==='knight'?15:10;
+ const ffGlow=ctx.createRadialGradient(u.x,u.y-2,0,u.x,u.y-2,radius);
+ ffGlow.addColorStop(0,u.team==='blue'?'rgba(91,177,255,.20)':'rgba(255,89,68,.18)');ffGlow.addColorStop(1,'rgba(0,0,0,0)');
+ ctx.fillStyle=ffGlow;ctx.beginPath();ctx.arc(u.x,u.y-2,radius,0,Math.PI*2);ctx.fill();
+ if(u.hero||u.kind==='mage'){const pulse=.5+.5*Math.sin(elapsed*3.1+u.lane);ctx.globalAlpha=.25+pulse*.22;ctx.fillStyle=u.team==='blue'?'#8fdcff':'#ff9b85';ctx.beginPath();ctx.arc(u.x,u.y-8,radius*.16,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+}
+for(let lane=0;lane<3;lane++){const y=H*[.24,.5,.76][lane];for(const side of [-1,1]){const x=W*(side<0?.22:.78);const ffLamp=ctx.createRadialGradient(x,y-12,1,x,y-12,40);ffLamp.addColorStop(0,side<0?'rgba(116,194,255,.13)':'rgba(255,128,98,.12)');ffLamp.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=ffLamp;ctx.beginPath();ctx.arc(x,y-12,40,0,Math.PI*2);ctx.fill()}}
+ctx.restore();
+// Soft edge falloff adds depth while keeping the centre of each lane readable.
+const ffEdge=ctx.createRadialGradient(W*.5,H*.48,Math.min(W,H)*.22,W*.5,H*.48,Math.max(W,H)*.72);
+ffEdge.addColorStop(0,'rgba(5,10,8,0)');ffEdge.addColorStop(.72,'rgba(5,10,8,.08)');ffEdge.addColorStop(1,'rgba(3,7,6,.42)');
+ctx.fillStyle=ffEdge;ctx.fillRect(0,0,W,H);
 if(ended){ctx.fillStyle='#091217b8';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle=enemyBase<=0?'#ffe29a':'#ff9d8a';ctx.font='900 '+Math.min(34,W*.07)+'px system-ui';ctx.fillText(enemyBase<=0?'VICTORY':'DEFEAT',W/2,H/2);ctx.font='14px system-ui';ctx.fillStyle='#fff';ctx.fillText('Press Restart to play again',W/2,H/2+28)}
 }
 function drawTower(x,y,color,hp,maxHp=40,level=1){
