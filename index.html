@@ -675,7 +675,7 @@ function buildKeep(x,z,color){
 const keeps=[buildKeep(-11.2,-5.9,'#4c8ce8'),buildKeep(-11.2,0,'#4c8ce8'),buildKeep(-11.2,5.9,'#4c8ce8'),buildKeep(11.2,-5.9,'#d65c4e'),buildKeep(11.2,0,'#d65c4e'),buildKeep(11.2,5.9,'#d65c4e')];
 keeps.forEach((g,i)=>{g.userData.ffTarget=i<3?'tower':'enemyBase';g.userData.ffLane=i%3;});
 function makeUnit(u){
- const g=new THREE.Group();g.userData.key=u.key;
+ const g=new THREE.Group();g.userData.key=u.key;g.userData.ffTarget='unit';
  const blue=u.team==='blue',c=blue?'#438ee9':'#d84d42',armor=mat(blue?'#789bc0':'#b97a6b',.48,.28),cloth=mat(c,.72),skin=mat('#c9a27d'),iron=mat('#c6c9c5',.32,.65),wood=mat('#70482d');
  const body=new THREE.Mesh(new THREE.BoxGeometry(.34,.52,.25),armor);body.position.y=.58;body.castShadow=true;g.add(body);
  const tabard=new THREE.Mesh(new THREE.BoxGeometry(.37,.35,.27),cloth);tabard.position.set(0,.43,0);tabard.castShadow=true;g.add(tabard);
@@ -753,13 +753,17 @@ wrap.addEventListener("pointerdown",e=>{
  ffPointer.x=((e.clientX-r.left)/r.width)*2-1;
  ffPointer.y=-((e.clientY-r.top)/r.height)*2+1;
  ffRaycaster.setFromCamera(ffPointer,camera);
- const hits=ffRaycaster.intersectObjects(keeps,true);
+ const hits=ffRaycaster.intersectObjects([...keeps,...Array.from(units.values())],true);
  if(!hits.length)return;
  let node=hits[0].object;
  while(node&&!node.userData.ffTarget)node=node.parent;
  if(!node)return;
  e.preventDefault();e.stopImmediatePropagation();
- const detail={type:node.userData.ffTarget,lane:node.userData.ffLane};
+ let detail={type:node.userData.ffTarget,lane:node.userData.ffLane};
+ if(detail.type==='unit'&&node.userData.lastPos){
+  const state=window.__ffRenderState;
+  if(state){detail.x=(node.userData.lastPos.x/23+.5)*state.w;detail.y=(node.userData.lastPos.z/13.5+.5)*state.h;}
+ }
  document.dispatchEvent(new CustomEvent("ff3d-pick",{detail}));
 },true);
 
