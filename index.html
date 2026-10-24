@@ -176,7 +176,35 @@ button:disabled{filter:saturate(.4);opacity:.48}
  #contextMenu .armory-grid button{min-height:56px}
 }
 
-#ffFullscreen{margin-left:auto;flex:0 0 auto;padding:6px 10px;border:1px solid #806b46;border-radius:6px;background:#2a2923;color:#f2d99a;font:700 11px system-ui;cursor:pointer;white-space:nowrap}#ffFullscreen:hover{background:#49402e}header{display:flex;align-items:center;gap:8px}#app:fullscreen{width:100vw;height:100vh;height:100dvh;background:#101820}#app:fullscreen #arenaWrap{min-height:0}body.ff-css-fullscreen{overflow:hidden}body.ff-css-fullscreen #app{position:fixed;inset:0;z-index:99999;width:100vw;height:100vh;height:100dvh}body.ff-css-fullscreen #ffFullscreen{color:#fff} @media(max-width:480px){#ffFullscreen{font-size:10px;padding:5px 7px}}</style>
+#ffFullscreen{margin-left:auto;flex:0 0 auto;padding:6px 10px;border:1px solid #806b46;border-radius:6px;background:#2a2923;color:#f2d99a;font:700 11px system-ui;cursor:pointer;white-space:nowrap}#ffFullscreen:hover{background:#49402e}header{display:flex;align-items:center;gap:8px}#app:fullscreen{width:100vw;height:100vh;height:100dvh;background:#101820}#app:fullscreen #arenaWrap{min-height:0}body.ff-css-fullscreen{overflow:hidden}body.ff-css-fullscreen #app{position:fixed;inset:0;z-index:99999;width:100vw;height:100vh;height:100dvh}body.ff-css-fullscreen #ffFullscreen{color:#fff} @media(max-width:480px){#ffFullscreen{font-size:10px;padding:5px 7px}}
+/* Gameplay layout correction: battlefield first, controls compact, minimap genuinely mini. */
+#arenaWrap{flex:1 1 auto!important;min-height:0!important}
+#bottom{flex:0 0 clamp(112px,16vh,150px)!important;max-height:150px!important;min-height:112px!important;grid-template-columns:minmax(130px,.72fr) minmax(220px,.9fr) minmax(280px,1.25fr)!important;grid-template-rows:minmax(0,1fr)!important;gap:5px!important;padding:5px!important;overflow:hidden!important}
+#bottom>#heroPanel{grid-column:1!important;grid-row:1!important;min-width:0;overflow:hidden}
+#bottom>#heroControls{grid-column:2!important;grid-row:1!important;min-width:0;overflow:hidden}
+#bottom>#troopControls{grid-column:3!important;grid-row:1!important;min-width:0;overflow:hidden}
+#bottom>#battleInfo{grid-column:1 / -1!important;grid-row:2!important;display:none!important}
+#ffMiniWrap{position:fixed!important;right:10px!important;bottom:10px!important;width:clamp(110px,10vw,170px)!important;height:clamp(38px,5vw,64px)!important;min-height:0!important;flex:none!important;z-index:20!important;opacity:.9;border:1px solid #8d7547;background:#080d0d;box-shadow:0 2px 10px #0009}
+#ffMiniMap{width:100%!important;height:100%!important;min-height:0!important;border:0!important;image-rendering:auto!important}
+#bottom .panel{padding:5px!important}
+#bottom .panel h2{font-size:9px!important;margin-bottom:3px!important;padding-bottom:2px!important}
+#bottom .panel p{font-size:9px!important;line-height:1.1!important}
+#bottom .actions{gap:4px!important}
+#bottom .actions button{min-height:27px!important;padding:3px 4px!important;font-size:10px!important;line-height:1.05!important}
+#bottom .lanes{gap:3px!important;margin-bottom:3px!important}
+#bottom .lanes button{min-height:22px!important;padding:2px!important;font-size:9px!important}
+@media(max-width:1000px){
+ #bottom{flex-basis:132px!important;max-height:132px!important;min-height:105px!important;grid-template-columns:minmax(110px,.7fr) minmax(170px,.9fr) minmax(230px,1.2fr)!important}
+ #ffMiniWrap{width:115px!important;height:42px!important;right:6px!important;bottom:6px!important}
+}
+@media(max-height:650px) and (orientation:landscape){
+ #bottom{flex-basis:100px!important;max-height:100px!important;min-height:88px!important}
+ #bottom .panel h2{font-size:8px!important}
+ #bottom .actions button{min-height:23px!important;font-size:9px!important}
+ #ffMiniWrap{width:105px!important;height:36px!important}
+}
+
+</style>
 </head>
 <body>
 <div id="rotateNotice"><div class="inner"><div class="symbol">📱 ↻</div><h1>Rotate to landscape</h1><p>Footmen Frenzy is designed for a wide battlefield. Turn your phone sideways to continue.</p></div></div>
