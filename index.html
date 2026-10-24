@@ -728,7 +728,7 @@ let panPointer=null,panStartX=0,panStartY=0,panLastX=0,panLastY=0,panDragged=fal
 const panCanvas=document.getElementById("game");
  panCanvas.style.touchAction="none";
  panCanvas.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;panPointer=e.pointerId;panStartX=panLastX=e.clientX;panStartY=panLastY=e.clientY;panDragged=false;try{panCanvas.setPointerCapture(e.pointerId)}catch(_){} });
- panCanvas.addEventListener("pointermove",e=>{if(panPointer!==e.pointerId)return;const dx=e.clientX-panLastX,dy=e.clientY-panLastY;if(Math.hypot(e.clientX-panStartX,e.clientY-panStartY)>5)panDragged=true;if(panDragged){e.preventDefault();const scale=0.045/zoom;target.x=Math.max(-8,Math.min(8,target.x-dx*scale));target.z=Math.max(-4.5,Math.min(4.5,target.z-dy*scale));applyZoom()}panLastX=e.clientX;panLastY=e.clientY});
+ panCanvas.addEventListener("pointermove",e=>{if(panPointer!==e.pointerId)return;const dx=e.clientX-panLastX,dy=e.clientY-panLastY;if(Math.hypot(e.clientX-panStartX,e.clientY-panStartY)>5)panDragged=true;if(panDragged){e.preventDefault();const scale=0.045/zoom;target.x=Math.max(-8,Math.min(8,target.x-dx*scale));target.z=Math.max(-4.5,Math.min(4.5,target.z+dy*scale));applyZoom()}panLastX=e.clientX;panLastY=e.clientY});
 const clearPan=e=>{if(panPointer===e.pointerId){if(panDragged){const once=e=>{e.stopImmediatePropagation();e.preventDefault();panCanvas.removeEventListener("click",once,true)};panCanvas.addEventListener("click",once,true)}panPointer=null;panDragged=false}};
 panCanvas.addEventListener("pointerup",clearPan);panCanvas.addEventListener("pointercancel",clearPan);
 function setZoom(v){zoom=Math.max(.75,Math.min(3.2,v));applyZoom()}
