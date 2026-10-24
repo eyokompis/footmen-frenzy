@@ -711,7 +711,15 @@ function sync(){
  for(const [key,obj] of units){if(!alive.has(key)){scene.remove(obj);units.delete(key)}}
  for(let i=0;i<3;i++){keeps[i].scale.setScalar(.85+Math.max(0,s.playerTowers[i])/40*.15);keeps[i+3].scale.setScalar(.85+Math.max(0,s.enemyTowers[i])/40*.15)}
 }
-\n// Drag the battlefield to pan the camera while keeping ordinary taps for unit selection.\nlet panPointer=null,panStartX=0,panStartY=0,panLastX=0,panLastY=0,panDragged=false;\ncanvas.style.touchAction="none";\ncanvas.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;panPointer=e.pointerId;panStartX=panLastX=e.clientX;panStartY=panLastY=e.clientY;panDragged=false;try{canvas.setPointerCapture(e.pointerId)}catch(_){} });\ncanvas.addEventListener("pointermove",e=>{if(panPointer!==e.pointerId)return;const dx=e.clientX-panLastX,dy=e.clientY-panLastY;if(Math.hypot(e.clientX-panStartX,e.clientY-panStartY)>5)panDragged=true;if(panDragged){e.preventDefault();const scale=0.045/zoom;target.x=Math.max(-8,Math.min(8,target.x-dx*scale));target.z=Math.max(-4.5,Math.min(4.5,target.z+dy*scale));applyZoom()}panLastX=e.clientX;panLastY=e.clientY});\nconst clearPan=e=>{if(panPointer===e.pointerId){if(panDragged){const suppress=e=>{e.stopImmediatePropagation();e.preventDefault()},once=e=>{suppress(e);canvas.removeEventListener("click",once,true)};canvas.addEventListener("click",once,true)}panPointer=null;panDragged=false}};\ncanvas.addEventListener("pointerup",clearPan);canvas.addEventListener("pointercancel",clearPan);\nfunction setZoom(v){zoom=Math.max(.75,Math.min(3.2,v));applyZoom()}
+
+// Drag the battlefield to pan the camera while keeping ordinary taps for unit selection.
+let panPointer=null,panStartX=0,panStartY=0,panLastX=0,panLastY=0,panDragged=false;
+canvas.style.touchAction="none";
+canvas.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;panPointer=e.pointerId;panStartX=panLastX=e.clientX;panStartY=panLastY=e.clientY;panDragged=false;try{canvas.setPointerCapture(e.pointerId)}catch(_){} });
+canvas.addEventListener("pointermove",e=>{if(panPointer!==e.pointerId)return;const dx=e.clientX-panLastX,dy=e.clientY-panLastY;if(Math.hypot(e.clientX-panStartX,e.clientY-panStartY)>5)panDragged=true;if(panDragged){e.preventDefault();const scale=0.045/zoom;target.x=Math.max(-8,Math.min(8,target.x-dx*scale));target.z=Math.max(-4.5,Math.min(4.5,target.z+dy*scale));applyZoom()}panLastX=e.clientX;panLastY=e.clientY});
+const clearPan=e=>{if(panPointer===e.pointerId){if(panDragged){const suppress=e=>{e.stopImmediatePropagation();e.preventDefault()},once=e=>{suppress(e);canvas.removeEventListener("click",once,true)};canvas.addEventListener("click",once,true)}panPointer=null;panDragged=false}};
+canvas.addEventListener("pointerup",clearPan);canvas.addEventListener("pointercancel",clearPan);
+function setZoom(v){zoom=Math.max(.75,Math.min(3.2,v));applyZoom()}
 document.getElementById("ffZoomIn").addEventListener("click",()=>setZoom(zoom*1.18));
 document.getElementById("ffZoomOut").addEventListener("click",()=>setZoom(zoom/1.18));
 document.getElementById("ffZoomReset").addEventListener("click",()=>setZoom(1.8));
