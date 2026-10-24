@@ -607,7 +607,18 @@ header{min-height:44px;display:flex;align-items:center;justify-content:space-bet
 @media(max-height:650px){#bottom{flex-basis:190px;min-height:175px}#arenaWrap{min-height:120px}#heroPanel{grid-template-columns:70px minmax(0,1fr)}#ffPortrait{width:67px;height:78px;font-size:35px}}
 </style>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+(async()=>{
+let THREE;
+try {
+  THREE = await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js');
+} catch (primaryCdnError) {
+  try {
+    THREE = await import('https://unpkg.com/three@0.170.0/build/three.module.js');
+  } catch (backupCdnError) {
+    console.warn('Three.js could not load from either CDN; keeping the classic canvas renderer.', backupCdnError);
+    return;
+  }
+}
 try{
 const canvas=document.getElementById('ff3d'),baseCanvas=document.getElementById('game'),wrap=document.getElementById('arenaWrap');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
@@ -717,7 +728,7 @@ let panPointer=null,panStartX=0,panStartY=0,panLastX=0,panLastY=0,panDragged=fal
 const panCanvas=document.getElementById("game");
  panCanvas.style.touchAction="none";
  panCanvas.addEventListener("pointerdown",e=>{if(e.button!==undefined&&e.button!==0)return;panPointer=e.pointerId;panStartX=panLastX=e.clientX;panStartY=panLastY=e.clientY;panDragged=false;try{panCanvas.setPointerCapture(e.pointerId)}catch(_){} });
- panCanvas.addEventListener("pointermove",e=>{if(panPointer!==e.pointerId)return;const dx=e.clientX-panLastX,dy=e.clientY-panLastY;if(Math.hypot(e.clientX-panStartX,e.clientY-panStartY)>5)panDragged=true;if(panDragged){e.preventDefault();const scale=0.045/zoom;target.x=Math.max(-8,Math.min(8,target.x-dx*scale));target.z=Math.max(-4.5,Math.min(4.5,target.z+dy*scale));applyZoom()}panLastX=e.clientX;panLastY=e.clientY});
+ panCanvas.addEventListener("pointermove",e=>{if(panPointer!==e.pointerId)return;const dx=e.clientX-panLastX,dy=e.clientY-panLastY;if(Math.hypot(e.clientX-panStartX,e.clientY-panStartY)>5)panDragged=true;if(panDragged){e.preventDefault();const scale=0.045/zoom;target.x=Math.max(-8,Math.min(8,target.x-dx*scale));target.z=Math.max(-4.5,Math.min(4.5,target.z-dy*scale));applyZoom()}panLastX=e.clientX;panLastY=e.clientY});
 const clearPan=e=>{if(panPointer===e.pointerId){if(panDragged){const once=e=>{e.stopImmediatePropagation();e.preventDefault();panCanvas.removeEventListener("click",once,true)};panCanvas.addEventListener("click",once,true)}panPointer=null;panDragged=false}};
 panCanvas.addEventListener("pointerup",clearPan);panCanvas.addEventListener("pointercancel",clearPan);
 function setZoom(v){zoom=Math.max(.75,Math.min(3.2,v));applyZoom()}
@@ -733,6 +744,7 @@ applyZoom();
 function render(){requestAnimationFrame(render);try{sync();renderer.render(scene,camera);if(canvas.style.opacity!=='1'){canvas.style.opacity='1';baseCanvas.style.opacity='0'}}catch(e){console.warn('3D render fallback',e);canvas.style.opacity='0';baseCanvas.style.opacity='1'}}
 window.addEventListener('resize',()=>{lastW=0;lastH=0});render();
 }catch(e){console.warn('3D renderer unavailable; using classic canvas',e)}
+})();
 </script>
 <script>
 (()=>{const app=document.getElementById('app'),btn=document.getElementById('ffFullscreen');if(!app||!btn)return;function update(){const active=!!document.fullscreenElement||document.body.classList.contains('ff-css-fullscreen');btn.textContent=active?'⛶ EXIT FULLSCREEN':'⛶ FULLSCREEN';btn.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');}async function toggle(){try{if(document.fullscreenElement){await document.exitFullscreen();}else if(app.requestFullscreen){await app.requestFullscreen();}else{document.body.classList.toggle('ff-css-fullscreen');}if(screen.orientation&&screen.orientation.lock&&document.fullscreenElement){screen.orientation.lock('landscape').catch(()=>{});}}catch(e){document.body.classList.toggle('ff-css-fullscreen');}update();setTimeout(()=>window.dispatchEvent(new Event('resize')),80);}btn.addEventListener('click',toggle);document.addEventListener('fullscreenchange',update);document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='f'&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();toggle();}});update();})();
